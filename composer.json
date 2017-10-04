@@ -1,0 +1,46 @@
+{
+    "name": "codezero/laravel-translator",
+    "description": "Import, manage and export Laravel's language files in the database.",
+    "keywords": [
+        "laravel",
+        "translation",
+        "localization",
+        "language"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ivan Vermeyen",
+            "email": "ivan@codezero.be"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "friendsofphp/php-cs-fixer": "^2.7",
+        "spatie/laravel-translatable": "^1.3"
+    },
+    "require-dev": {
+        "fzaninotto/faker": "~1.4",
+        "mockery/mockery": "0.9.*",
+        "orchestra/testbench": "~3.4",
+        "phpunit/phpunit": "~5.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "CodeZero\\Translator\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CodeZero\\Translator\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CodeZero\\Translator\\TranslatorServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}
