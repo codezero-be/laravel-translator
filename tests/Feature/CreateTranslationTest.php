@@ -167,23 +167,6 @@ class CreateTranslationTest extends TestCase
     }
 
     /** @test */
-    public function translation_keys_are_converted_to_lower_case()
-    {
-        $file = factory(TranslationFile::class)->create();
-
-        $response = $this->postJson(route('translator.translations.store', $file), [
-            'key' => 'This.Is.My-1st-Key',
-        ]);
-
-        $response->assertStatus(200);
-
-        $this->assertEquals(
-            'this.is.my-1st-key',
-            $file->translations()->first()->key
-        );
-    }
-
-    /** @test */
     public function translated_values_are_optional()
     {
         $file = factory(TranslationFile::class)->create();

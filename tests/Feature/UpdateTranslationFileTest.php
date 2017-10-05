@@ -93,26 +93,6 @@ class UpdateTranslationFileTest extends TestCase
     }
 
     /** @test */
-    public function translation_file_name_and_package_are_converted_to_lower_case()
-    {
-        $file = factory(TranslationFile::class)->create([
-            'name' => 'my-file',
-            'package' => 'my-package',
-        ]);
-
-        $response = $this->patchJson(route('translator.files.update', $file), [
-            'name' => 'New-File',
-            'package' => 'New-Package',
-        ]);
-
-        $response->assertStatus(200);
-
-        $translation = TranslationFile::first();
-        $this->assertEquals('new-file', $translation->name);
-        $this->assertEquals('new-package', $translation->package);
-    }
-
-    /** @test */
     public function translation_package_can_be_omitted_in_update_requests()
     {
         $file = factory(TranslationFile::class)->create([

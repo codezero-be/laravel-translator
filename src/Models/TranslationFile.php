@@ -36,28 +36,4 @@ class TranslationFile extends Model
     {
         return $this->hasMany(Translation::class, 'file_id');
     }
-
-    /**
-     * Set the name attribute.
-     *
-     * @param string $value
-     *
-     * @return void
-     */
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = strtolower($value);
-    }
-
-    /**
-     * Set the package attribute.
-     *
-     * @param string $value
-     *
-     * @return void
-     */
-    public function setPackageAttribute($value)
-    {
-        $this->attributes['package'] = strtolower($value) ?: null;
-    }
 }

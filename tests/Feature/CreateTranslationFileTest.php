@@ -76,21 +76,6 @@ class CreateTranslationFileTest extends TestCase
     }
 
     /** @test */
-    public function translation_file_name_and_package_are_converted_to_lower_case()
-    {
-        $response = $this->postJson(route('translator.files.store'), [
-            'name' => 'My-File',
-            'package' => 'My-Package',
-        ]);
-
-        $response->assertStatus(200);
-
-        $translation = TranslationFile::first();
-        $this->assertEquals('my-file', $translation->name);
-        $this->assertEquals('my-package', $translation->package);
-    }
-
-    /** @test */
     public function translation_package_is_optional()
     {
         $this->postJson(route('translator.files.store'), [

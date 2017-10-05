@@ -213,18 +213,6 @@ class UpdateTranslationTest extends TestCase
     }
 
     /** @test */
-    public function translation_keys_are_converted_to_lower_case()
-    {
-        $translation = factory(Translation::class)->create();
-
-        $this->patchJson(route('translator.translations.update', $translation), [
-            'key' => 'Some.Key',
-        ])->assertStatus(200);
-
-        $this->assertEquals('some.key', $translation->fresh()->key);
-    }
-
-    /** @test */
     public function body_can_be_updated_separately()
     {
         $translation = factory(Translation::class)->create([

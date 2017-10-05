@@ -102,18 +102,6 @@ class Translation extends Model
     }
 
     /**
-     * Set the key attribute.
-     *
-     * @param string $value
-     *
-     * @return void
-     */
-    public function setKeyAttribute($value)
-    {
-        $this->attributes['key'] = strtolower($value);
-    }
-
-    /**
      * Get an attribute or look for a translation if the attribute is null.
      * This will allow you to get "$translation->en", etc.
      *
