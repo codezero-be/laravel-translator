@@ -20,7 +20,7 @@ trait ChecksForValidationErrors
         $response->assertStatus(422);
 
         foreach ($fields as $field) {
-            $this->assertTrue(array_key_exists($field, $json));
+            $this->assertTrue(array_key_exists($field, $json['errors']));
         }
 
         return $this;

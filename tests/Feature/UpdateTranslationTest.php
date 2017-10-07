@@ -254,21 +254,4 @@ class UpdateTranslationTest extends TestCase
 
         $this->assertEquals([], $translation->fresh()->getTranslations('body'));
     }
-
-    /** @test */
-    public function body_can_be_set_to_null()
-    {
-        $translation = factory(Translation::class)->create([
-            'key' => 'some.key',
-            'body' => [
-                'nl' => 'nl',
-            ],
-        ]);
-
-        $this->patchJson(route('translator.translations.update', $translation), [
-            'body' => null,
-        ])->assertStatus(200);
-
-        $this->assertEquals([], $translation->fresh()->getTranslations('body'));
-    }
 }

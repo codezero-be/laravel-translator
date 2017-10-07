@@ -38,7 +38,7 @@ class TranslationController extends Controller
         ]);
 
         return $file->translations()->create(
-            request()->intersect(['is_html', 'key', 'body'])
+            array_filter(request()->only(['is_html', 'key', 'body']))
         );
     }
 
