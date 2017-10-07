@@ -39,7 +39,7 @@ class TranslationFileController extends Controller
         ]);
 
         return TranslationFile::create(
-            request()->intersect(['name', 'package'])
+            array_filter(request()->only(['name', 'package']))
         );
     }
 

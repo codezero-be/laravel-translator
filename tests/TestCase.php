@@ -4,13 +4,13 @@ namespace CodeZero\Translator\Tests;
 
 use CodeZero\Translator\TranslatorServiceProvider;
 use Illuminate\Foundation\Auth\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use Spatie\Translatable\TranslatableServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     /**
      * Setup the test environment.
@@ -18,6 +18,8 @@ abstract class TestCase extends BaseTestCase
     protected function setUp()
     {
         parent::setUp();
+
+        config()->set('app.key', str_random(32));
 
         $this->artisan('migrate', ['--database' => 'testing']);
 
