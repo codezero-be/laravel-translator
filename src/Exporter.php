@@ -16,6 +16,13 @@ class Exporter
     protected $destination;
 
     /**
+     * Path to the PHP CS Fixer.
+     *
+     * @var string
+     */
+    protected $fixer;
+
+    /**
      * Array of exported translations.
      *
      * @var array
@@ -27,12 +34,14 @@ class Exporter
      * The destination folder will be cleared before export.
      *
      * @param null|string $destination
+     * @param null|string $fixer
      *
      * @return array
      */
-    public function export($destination = null)
+    public function export($destination = null, $fixer = null)
     {
         $this->destination = $destination ?: resource_path('lang');
+        $this->fixer = $fixer ?: base_path('vendor/bin/php-cs-fixer');
         $this->libraries = [];
 
         $translationFiles = TranslationFile::with('translations')->get();
@@ -46,6 +55,7 @@ class Exporter
 
         Artisan::call('lang:format', [
             'path' => $this->destination,
+            'fixer' => $this->fixer,
         ]);
 
         return $this->libraries;

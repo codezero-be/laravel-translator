@@ -16,6 +16,7 @@ class ExporterTest extends TestCase
 
         $this->exporter = new Exporter();
         $this->destination = __DIR__.'/../_lang-test-files/lang-temp';
+        $this->fixer = __DIR__.'/../../vendor/bin/php-cs-fixer';
 
         File::deleteDirectory($this->destination);
         File::makeDirectory($this->destination);
@@ -64,7 +65,7 @@ class ExporterTest extends TestCase
             ],
         ]);
 
-        $this->exporter->export($this->destination);
+        $this->exporter->export($this->destination, $this->fixer);
 
         $this->assertTrue(File::isFile($this->destination.'/en/app.php'));
         $this->assertTrue(File::isFile($this->destination.'/nl/app.php'));
@@ -113,7 +114,7 @@ class ExporterTest extends TestCase
             ],
         ]);
 
-        $this->exporter->export($this->destination);
+        $this->exporter->export($this->destination, $this->fixer);
 
         $this->assertTrue(File::isFile($this->destination.'/en/nested.php'));
 
@@ -159,7 +160,7 @@ class ExporterTest extends TestCase
             ],
         ]);
 
-        $this->exporter->export($this->destination);
+        $this->exporter->export($this->destination, $this->fixer);
 
         $this->assertTrue(File::isFile($this->destination.'/vendor/package-1/en/feature.php'));
         $this->assertTrue(File::isFile($this->destination.'/vendor/package-1/nl/feature.php'));
@@ -189,7 +190,7 @@ class ExporterTest extends TestCase
     {
         File::put("{$this->destination}/trash.php", 'This should be deleted before export.');
 
-        $this->exporter->export($this->destination);
+        $this->exporter->export($this->destination, $this->fixer);
 
         $this->assertFalse(File::isFile($this->destination.'/trash.php'));
     }

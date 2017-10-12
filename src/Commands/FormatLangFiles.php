@@ -13,7 +13,7 @@ class FormatLangFiles extends Command
      *
      * @var string
      */
-    protected $signature = 'lang:format {path? : The path to the language files}';
+    protected $signature = 'lang:format {path? : The path to the language files} {fixer? : The path to the php-cs-fixer}';
 
     /**
      * The console command description.
@@ -30,7 +30,7 @@ class FormatLangFiles extends Command
     public function handle()
     {
         $path = $this->argument('path') ?: resource_path('lang');
-        $fixer = __DIR__.'/../../vendor/bin/php-cs-fixer';
+        $fixer = $this->argument('fixer') ?: base_path('vendor/bin/php-cs-fixer');
         $rules = '{"@Symfony": true, "@PSR2": true, "array_syntax": {"syntax": "short"}}';
         $command = "php {$fixer} fix {$path} --rules='{$rules}' --using-cache='no'";
 
