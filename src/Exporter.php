@@ -51,7 +51,7 @@ class Exporter
         });
 
         $this->clearDestination();
-        $this->exportLibraries();
+        $this->exportLibraries($this->libraries);
         $this->formatLanguageFiles($this->libraries);
 
         return $this->libraries;
@@ -146,11 +146,13 @@ class Exporter
     /**
      * Export all libraries to their respective subdirectories.
      *
+     * @param array $libraries
+     *
      * @return void
      */
-    protected function exportLibraries()
+    protected function exportLibraries($libraries)
     {
-        foreach ($this->libraries as $library => $languages) {
+        foreach ($libraries as $library => $languages) {
             $path = $this->destination;
 
             if ($library !== 'root') {
