@@ -52,11 +52,7 @@ class Exporter
 
         $this->clearDestination();
         $this->exportLibraries();
-
-        Artisan::call('lang:format', [
-            'path' => $this->destination,
-            'fixer' => $this->fixer,
-        ]);
+        $this->formatLanguageFiles($this->libraries);
 
         return $this->libraries;
     }
@@ -220,6 +216,30 @@ class Exporter
         }
 
         return $array;
+    }
+
+    /**
+     * Format the generated language files.
+     * This use the short array syntax and proper indentation.
+     *
+     * @param array $libraries
+     *
+     * @return void
+     */
+    protected function formatLanguageFiles($libraries)
+    {
+        foreach ($libraries as $package => $translations) {
+            $path = $this->destination;
+
+            if ($package !== 'root') {
+                $path .= "/vendor/{$package}";
+            }
+
+            Artisan::call('lang:format', [
+                'path' => $path,
+                'fixer' => $this->fixer,
+            ]);
+        }
     }
 
     /**
