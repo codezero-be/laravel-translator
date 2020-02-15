@@ -4,15 +4,12 @@ namespace CodeZero\Translator\Tests\Feature;
 
 use CodeZero\Translator\Models\Translation;
 use CodeZero\Translator\Models\TranslationFile;
-use CodeZero\Translator\Tests\Concerns\ChecksForValidationErrors;
 use CodeZero\Translator\Tests\TestCase;
 
 class CreateTranslationTest extends TestCase
 {
-    use ChecksForValidationErrors;
-
     /** @test */
-    public function it_adds_a_translation()
+    public function it_adds_a_translation_to_the_database()
     {
         $file = factory(TranslationFile::class)->create();
         $body = [
@@ -61,7 +58,8 @@ class CreateTranslationTest extends TestCase
             'key' => 'my.key',
         ]);
 
-        $this->assertValidationError($response, 'is_html');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('is_html');
     }
 
     /** @test */
@@ -73,7 +71,8 @@ class CreateTranslationTest extends TestCase
             'key' => null,
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
     }
 
     /** @test */
@@ -91,7 +90,8 @@ class CreateTranslationTest extends TestCase
             'key' => 'existing.key',
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
 
         $response = $this->postJson(route('translator.translations.store', $fileTwo), [
             'key' => 'existing.key',
@@ -109,7 +109,8 @@ class CreateTranslationTest extends TestCase
             'key' => 'some.namespace',
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
     }
 
     /** @test */
@@ -121,7 +122,8 @@ class CreateTranslationTest extends TestCase
             'key' => 'some.namespace.key',
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
     }
 
     /** @test */
@@ -139,13 +141,15 @@ class CreateTranslationTest extends TestCase
             'key' => 'this.is.my_1st_key',
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
 
         $response = $this->postJson(route('translator.translations.store', $file), [
             'key' => "th'",
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
     }
 
     /** @test */
@@ -157,13 +161,15 @@ class CreateTranslationTest extends TestCase
             'key' => '.my-key',
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
 
         $response = $this->postJson(route('translator.translations.store', $file), [
             'key' => 'my-key.',
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
     }
 
     /** @test */

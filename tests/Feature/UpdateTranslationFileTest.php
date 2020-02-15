@@ -3,13 +3,10 @@
 namespace CodeZero\Translator\Tests\Feature;
 
 use CodeZero\Translator\Models\TranslationFile;
-use CodeZero\Translator\Tests\Concerns\ChecksForValidationErrors;
 use CodeZero\Translator\Tests\TestCase;
 
 class UpdateTranslationFileTest extends TestCase
 {
-    use ChecksForValidationErrors;
-
     /** @test */
     public function it_updates_a_translation_file()
     {
@@ -17,10 +14,11 @@ class UpdateTranslationFileTest extends TestCase
             'name' => 'my-file',
         ]);
 
-        $this->patchJson(route('translator.files.update', $file), [
+        $response = $this->patchJson(route('translator.files.update', $file), [
             'name' => 'new-file',
-        ])->assertStatus(200);
+        ]);
 
+        $response->assertStatus(200);
         $this->assertEquals('new-file', $file->fresh()->name);
     }
 
@@ -35,7 +33,8 @@ class UpdateTranslationFileTest extends TestCase
             'name' => null,
         ]);
 
-        $this->assertValidationError($response, 'name');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('name');
     }
 
     /** @test */
@@ -56,7 +55,8 @@ class UpdateTranslationFileTest extends TestCase
             'package' => $currentFile->package,
         ]);
 
-        $this->assertValidationError($response, 'name');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('name');
 
         $this->patchJson(route('translator.files.update', $currentFile), [
             'name' => $currentFile->name,
@@ -82,7 +82,8 @@ class UpdateTranslationFileTest extends TestCase
             'package' => 'some_package',
         ]);
 
-        $this->assertValidationError($response, ['name', 'package']);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['name', 'package']);
 
         $response = $this->patchJson(route('translator.files.update', $file), [
             'name' => 'my-file-1',

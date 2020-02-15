@@ -4,13 +4,10 @@ namespace CodeZero\Translator\Tests\Feature;
 
 use CodeZero\Translator\Models\Translation;
 use CodeZero\Translator\Models\TranslationFile;
-use CodeZero\Translator\Tests\Concerns\ChecksForValidationErrors;
 use CodeZero\Translator\Tests\TestCase;
 
 class UpdateTranslationTest extends TestCase
 {
-    use ChecksForValidationErrors;
-
     /** @test */
     public function it_updates_a_translation()
     {
@@ -34,6 +31,7 @@ class UpdateTranslationTest extends TestCase
         $response->assertStatus(200);
 
         $translation = $translation->fresh();
+
         $this->assertTrue($translation->is_html);
         $this->assertEquals('another.key', $translation->key);
         $this->assertEquals([
@@ -49,12 +47,12 @@ class UpdateTranslationTest extends TestCase
             'is_html' => true,
         ]);
 
-        $this->patchJson(route('translator.translations.update', $translation), [
+        $response = $this->patchJson(route('translator.translations.update', $translation), [
             'key' => 'my.key',
-        ])->assertStatus(200);
+        ]);
 
-        $translation = $translation->fresh();
-        $this->assertTrue($translation->is_html);
+        $response->assertStatus(200);
+        $this->assertTrue($translation->fresh()->is_html);
     }
 
     /** @test */
@@ -69,7 +67,8 @@ class UpdateTranslationTest extends TestCase
             'key' => 'my.key',
         ]);
 
-        $this->assertValidationError($response, 'is_html');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('is_html');
     }
 
     /** @test */
@@ -83,7 +82,8 @@ class UpdateTranslationTest extends TestCase
             'key' => null,
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
     }
 
     /** @test */
@@ -105,7 +105,8 @@ class UpdateTranslationTest extends TestCase
             'key' => $otherTranslation->key,
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
 
         $this->patchJson(route('translator.translations.update', $currentTranslation), [
             'key' => $currentTranslation->key,
@@ -135,7 +136,8 @@ class UpdateTranslationTest extends TestCase
             'key' => 'other.namespace',
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
 
         $response = $this->patchJson(route('translator.translations.update', $currentTranslation), [
             'key' => 'some.namespace',
@@ -163,7 +165,8 @@ class UpdateTranslationTest extends TestCase
             'key' => 'other.namespace.key',
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
 
         $response = $this->patchJson(route('translator.translations.update', $currentTranslation), [
             'key' => 'some.namespace.key',
@@ -183,13 +186,15 @@ class UpdateTranslationTest extends TestCase
             'key' => 'some_key',
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
 
         $response = $this->patchJson(route('translator.translations.update', $translation), [
             'key' => "th'",
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
     }
 
     /** @test */
@@ -203,13 +208,15 @@ class UpdateTranslationTest extends TestCase
             'key' => '.my-key',
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
 
         $response = $this->patchJson(route('translator.translations.update', $translation), [
             'key' => 'my-key.',
         ]);
 
-        $this->assertValidationError($response, 'key');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('key');
     }
 
     /** @test */

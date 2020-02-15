@@ -3,13 +3,10 @@
 namespace CodeZero\Translator\Tests\Feature;
 
 use CodeZero\Translator\Models\Translation;
-use CodeZero\Translator\Tests\Concerns\ChecksForValidationErrors;
 use CodeZero\Translator\Tests\TestCase;
 
 class ReadTranslationTest extends TestCase
 {
-    use ChecksForValidationErrors;
-
     /** @test */
     public function it_lists_translations()
     {

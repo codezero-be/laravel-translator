@@ -3,20 +3,19 @@
 namespace CodeZero\Translator\Tests\Feature;
 
 use CodeZero\Translator\Models\TranslationFile;
-use CodeZero\Translator\Tests\Concerns\ChecksForValidationErrors;
 use CodeZero\Translator\Tests\TestCase;
 
 class CreateTranslationFileTest extends TestCase
 {
-    use ChecksForValidationErrors;
-
     /** @test */
-    public function it_adds_a_translation_file()
+    public function it_adds_a_translation_file_to_the_database()
     {
-        $this->postJson(route('translator.files.store'), [
+        $response = $this->postJson(route('translator.files.store'), [
             'name' => 'my-file',
             'package' => 'my-package',
-        ])->assertStatus(201);
+        ]);
+
+        $response->assertStatus(201);
 
         $this->assertDatabaseHas('translation_files', [
             'name' => 'my-file',
@@ -31,7 +30,8 @@ class CreateTranslationFileTest extends TestCase
             'name' => null,
         ]);
 
-        $this->assertValidationError($response, 'name');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('name');
     }
 
     /** @test */
@@ -47,7 +47,8 @@ class CreateTranslationFileTest extends TestCase
             'package' => $existingFile->package,
         ]);
 
-        $this->assertValidationError($response, 'name');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('name');
 
         $response = $this->postJson(route('translator.files.store'), [
             'name' => $existingFile->name,
@@ -72,15 +73,18 @@ class CreateTranslationFileTest extends TestCase
             'package' => 'some_package',
         ]);
 
-        $this->assertValidationError($response, ['name', 'package']);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['name', 'package']);
     }
 
     /** @test */
     public function translation_package_is_optional()
     {
-        $this->postJson(route('translator.files.store'), [
+        $response = $this->postJson(route('translator.files.store'), [
             'name' => 'my-file',
             'package' => null,
-        ])->assertStatus(201);
+        ]);
+
+        $response->assertStatus(201);
     }
 }
