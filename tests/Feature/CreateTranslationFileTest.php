@@ -16,7 +16,7 @@ class CreateTranslationFileTest extends TestCase
         $this->postJson(route('translator.files.store'), [
             'name' => 'my-file',
             'package' => 'my-package',
-        ])->assertStatus(200);
+        ])->assertStatus(201);
 
         $this->assertDatabaseHas('translation_files', [
             'name' => 'my-file',
@@ -54,7 +54,7 @@ class CreateTranslationFileTest extends TestCase
             'package' => 'other-package',
         ]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(201);
     }
 
     /** @test */
@@ -65,7 +65,7 @@ class CreateTranslationFileTest extends TestCase
             'package' => 'some-package-1',
         ]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(201);
 
         $response = $this->postJson(route('translator.files.store'), [
             'name' => 'my_file',
@@ -81,6 +81,6 @@ class CreateTranslationFileTest extends TestCase
         $this->postJson(route('translator.files.store'), [
             'name' => 'my-file',
             'package' => null,
-        ])->assertStatus(200);
+        ])->assertStatus(201);
     }
 }

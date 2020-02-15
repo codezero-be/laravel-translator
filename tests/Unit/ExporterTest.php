@@ -10,7 +10,7 @@ use CodeZero\Translator\Tests\TestCase;
 
 class ExporterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -22,7 +22,7 @@ class ExporterTest extends TestCase
         File::makeDirectory($this->destination);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         File::deleteDirectory($this->destination);
     }

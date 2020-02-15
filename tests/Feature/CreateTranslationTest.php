@@ -26,7 +26,7 @@ class CreateTranslationTest extends TestCase
             'is_html' => true,
             'key' => 'my.key',
             'body' => $body,
-        ])->assertStatus(200);
+        ])->assertStatus(201);
 
         $translations = $file->translations()->get();
 
@@ -43,7 +43,7 @@ class CreateTranslationTest extends TestCase
 
         $this->postJson(route('translator.translations', $file), [
             'key' => 'my.key',
-        ])->assertStatus(200);
+        ])->assertStatus(201);
 
         $translations = $file->translations()->get();
 
@@ -97,7 +97,7 @@ class CreateTranslationTest extends TestCase
             'key' => 'existing.key',
         ]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(201);
     }
 
     /** @test */
@@ -133,7 +133,7 @@ class CreateTranslationTest extends TestCase
             'key' => 'this.is.my-1st-key',
         ]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(201);
 
         $response = $this->postJson(route('translator.translations.store', $file), [
             'key' => 'this.is.my_1st_key',
@@ -174,7 +174,7 @@ class CreateTranslationTest extends TestCase
         $this->postJson(route('translator.translations.store', $file), [
             'key' => 'my.key',
             'body' => null,
-        ])->assertStatus(200);
+        ])->assertStatus(201);
 
         $translations = $file->translations()->get();
 
@@ -195,7 +195,7 @@ class CreateTranslationTest extends TestCase
             'body' => [
                 'en' => $contents,
             ],
-        ])->assertStatus(200);
+        ])->assertStatus(201);
 
         $translations = $file->translations()->get();
 

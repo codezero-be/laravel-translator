@@ -6,6 +6,7 @@ use CodeZero\Translator\Models\Translation;
 use CodeZero\Translator\Models\TranslationFile;
 use DB;
 use File;
+use Illuminate\Support\Arr;
 
 class Importer
 {
@@ -157,7 +158,7 @@ class Importer
     protected function importLanguageFile($filePath)
     {
         $file = $this->findOrCreateTranslationFile($filePath);
-        $contents = array_dot(include $filePath);
+        $contents = Arr::dot(include $filePath);
         $locale = basename(dirname($filePath));
 
         foreach ($contents as $key => $body) {

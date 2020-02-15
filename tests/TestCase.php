@@ -15,11 +15,9 @@ abstract class TestCase extends BaseTestCase
     /**
      * Setup the test environment.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-
-        config()->set('app.key', str_random(32));
 
         $this->artisan('migrate', ['--database' => 'testing']);
 
