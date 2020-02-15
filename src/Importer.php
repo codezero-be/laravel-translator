@@ -4,9 +4,9 @@ namespace CodeZero\Translator;
 
 use CodeZero\Translator\Models\Translation;
 use CodeZero\Translator\Models\TranslationFile;
-use DB;
-use File;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class Importer
 {

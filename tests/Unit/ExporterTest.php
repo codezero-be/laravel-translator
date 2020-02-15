@@ -5,8 +5,8 @@ namespace CodeZero\Translator\Tests\Unit;
 use CodeZero\Translator\Exporter;
 use CodeZero\Translator\Models\Translation;
 use CodeZero\Translator\Models\TranslationFile;
-use File;
 use CodeZero\Translator\Tests\TestCase;
+use Illuminate\Support\Facades\File;
 
 class ExporterTest extends TestCase
 {

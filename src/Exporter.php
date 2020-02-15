@@ -2,9 +2,9 @@
 
 namespace CodeZero\Translator;
 
-use Artisan;
 use CodeZero\Translator\Models\TranslationFile;
-use File;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 
 class Exporter
 {

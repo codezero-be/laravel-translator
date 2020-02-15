@@ -4,9 +4,9 @@ namespace CodeZero\Translator;
 
 use CodeZero\Translator\Commands\FormatLangFiles;
 use CodeZero\Translator\Validators\UniqueTranslationKey;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
-use Request;
-use Validator;
 
 class TranslatorServiceProvider extends ServiceProvider
 {
