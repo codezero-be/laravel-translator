@@ -23,6 +23,9 @@
         "orchestra/testbench": ">=4.0",
         "phpunit/phpunit": "^8.0|^9.0"
     },
+    "scripts": {
+        "test": "phpunit"
+    },
     "autoload": {
         "psr-4": {
             "CodeZero\\Translator\\": "src"
