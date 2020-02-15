@@ -1,7 +1,10 @@
 # Laravel Translator
 
-#### Import, manage and export Laravel's language files in the database.
+#### Manage translation files in a Laravel project.
+
 This package is in development.
+
+Not intended to be used just yet :)
 
 ## License
 
