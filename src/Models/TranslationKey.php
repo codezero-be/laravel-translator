@@ -3,12 +3,9 @@
 namespace CodeZero\Translator\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
 
-class Translation extends Model
+class TranslationKey extends Model
 {
-    use HasTranslations;
-
     /**
      * The attributes that aren't mass assignable.
      *
@@ -22,24 +19,47 @@ class Translation extends Model
      * @var array
      */
     protected $casts = [
+        'translations' => 'array',
         'is_html' => 'boolean',
     ];
 
     /**
-     * The translatable attributes.
+     * Get translations.
      *
-     * @var array
+     * @return array
      */
-    public $translatable = ['body'];
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
 
     /**
-     * The TranslationFile this Translation belongs to.
+     * Get a translation in the given locale.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @param string $locale
+     *
+     * @return string|null
      */
-    public function file()
+    public function getTranslation($locale)
     {
-        return $this->belongsTo(TranslationFile::class);
+        return $this->translations[$locale] ?? null;
+    }
+
+    /**
+     * Add a translation in the specified locale.
+     *
+     * @param string $locale
+     * @param string $translation
+     *
+     * @return \CodeZero\Translator\Models\TranslationKey
+     */
+    public function addTranslation($locale, $translation)
+    {
+        $translations = $this->translations;
+        $translations[$locale] = $translation;
+        $this->translations = $translations;
+
+        return $this;
     }
 
     /**
@@ -71,7 +91,6 @@ class Translation extends Model
         });
 
         return $query;
-
     }
 
     /**
@@ -103,20 +122,14 @@ class Translation extends Model
 
     /**
      * Get an attribute or look for a translation if the attribute is null.
-     * This will allow you to get "$translation->en", etc.
+     * This will allow you to access "$this->en", etc.
      *
      * @param string $key
      *
      * @return mixed
      */
-    public function __get($key)
+    public function getAttribute($key)
     {
-        $value = $this->getAttribute($key);
-
-        if ($value !== null) {
-            return $value;
-        }
-
-        return $this->getTranslation('body', $key, false) ?: null;
+        return parent::getAttribute($key) ?: $this->getTranslation($key);
     }
 }

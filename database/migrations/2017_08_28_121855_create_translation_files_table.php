@@ -15,9 +15,9 @@ class CreateTranslationFilesTable extends Migration
     {
         Schema::create('translation_files', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('package')->nullable();
-            $table->unique(['name', 'package']);
+            $table->string('vendor')->nullable()->index();
+            $table->string('filename')->index();
+            $table->unique(['vendor', 'filename']);
             $table->timestamps();
         });
     }

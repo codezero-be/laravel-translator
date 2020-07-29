@@ -23,17 +23,39 @@ class TranslationFile extends Model
         parent::boot();
 
         static::deleting(function ($file) {
-            $file->translations->each->delete();
+            $file->getTranslationKeys()->each->delete();
         });
     }
 
     /**
-     * The Translations in this TranslationFile.
+     * The TranslationKeys of this TranslationFile.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function translations()
+    public function translationKeys()
     {
-        return $this->hasMany(Translation::class, 'file_id');
+        return $this->hasMany(TranslationKey::class, 'file_id');
+    }
+
+    /**
+     * Get all related TranslationKeys.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getTranslationKeys()
+    {
+        return $this->translationKeys;
+    }
+
+    /**
+     * Get a TranslationKey.
+     *
+     * @param string $key
+     *
+     * @return \CodeZero\Translator\Models\TranslationKey|null
+     */
+    public function getTranslationKey($key)
+    {
+        return $this->getTranslationKeys()->where('key', $key)->first();
     }
 }
