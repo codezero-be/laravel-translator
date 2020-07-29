@@ -17,7 +17,7 @@ class TranslationFile
      *
      * @var string
      */
-    public $file;
+    public $filename;
 
     /**
      * Translations in this file.
@@ -29,13 +29,26 @@ class TranslationFile
     /**
      * Create a new TranslationFile instance.
      *
-     * @param string $file
+     * @param string $filename
      * @param string|null $vendor
      */
-    public function __construct($file, $vendor = null)
+    public function __construct($filename, $vendor = null)
     {
         $this->vendor = $vendor;
-        $this->file = $file;
+        $this->filename = $filename;
+    }
+
+    /**
+     * Create a new TranslationFile instance.
+     *
+     * @param string $filename
+     * @param string|null $vendor
+     *
+     * @return \CodeZero\Translator\FileLoader\TranslationFile
+     */
+    public static function make($filename, $vendor = null)
+    {
+        return new static($filename, $vendor);
     }
 
     /**

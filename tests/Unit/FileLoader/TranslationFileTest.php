@@ -10,13 +10,13 @@ class TranslationFileTest extends TestCase
     /** @test */
     public function it_makes_a_new_translation_file_instance()
     {
-        $translations = new TranslationFile('fileName');
-        $this->assertEquals('fileName', $translations->file);
+        $translations = TranslationFile::make('fileName');
+        $this->assertEquals('fileName', $translations->filename);
         $this->assertNull($translations->vendor);
         $this->assertNull($translations->translations);
 
-        $translations = new TranslationFile('fileName', 'vendorName');
-        $this->assertEquals('fileName', $translations->file);
+        $translations = TranslationFile::make('fileName', 'vendorName');
+        $this->assertEquals('fileName', $translations->filename);
         $this->assertEquals('vendorName', $translations->vendor);
         $this->assertNull($translations->translations);
     }
@@ -24,7 +24,7 @@ class TranslationFileTest extends TestCase
     /** @test */
     public function it_adds_translations()
     {
-        $translations = new TranslationFile('fileName');
+        $translations = TranslationFile::make('fileName');
         $translations->addTranslation('key', 'en', 'translation [en]');
         $translations->addTranslation('key', 'nl', 'translation [nl]');
 
@@ -39,7 +39,7 @@ class TranslationFileTest extends TestCase
     /** @test */
     public function it_replaces_translations()
     {
-        $translations = new TranslationFile('fileName');
+        $translations = TranslationFile::make('fileName');
         $translations->addTranslation('key', 'en', 'translation A [en]');
         $translations->addTranslation('key', 'en', 'translation B [en]');
 

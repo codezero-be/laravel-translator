@@ -3,6 +3,7 @@
 namespace CodeZero\Translator\Tests\Unit\FileLoader;
 
 use CodeZero\Translator\FileLoader\LaravelFileLoader;
+use CodeZero\Translator\FileLoader\TranslationFile;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Support\Facades\File;
 
@@ -12,22 +13,14 @@ class LaravelFileLoaderTest extends TestCase
     public function it_loads_translation_from_translation_files()
     {
         $this->createTranslationFile('en/auth.php', [
-            'login' => [
-                'password' => 'password incorrect',
-            ],
-            'session' => [
-                'expired' => 'session expired',
-            ],
+            'login' => ['password' => 'password incorrect'],
+            'session' => ['expired' => 'session expired'],
         ]);
         $this->createTranslationFile('nl/auth.php', [
-            'login' => [
-                'password' => 'wachtwoord onjuist',
-            ],
+            'login' => ['password' => 'wachtwoord onjuist'],
         ]);
         $this->createTranslationFile('vendor/package/en/langfile.php', [
-            'some' => [
-                'key' => 'vendor translation',
-            ],
+            'some' => ['key' => 'vendor translation'],
         ]);
         $this->createTranslationFile('nl.json', [
             'This is a JSON translation.' => 'Dit is een JSON vertaling.',
@@ -37,21 +30,23 @@ class LaravelFileLoaderTest extends TestCase
         ]);
 
         $loader = new LaravelFileLoader();
-        $translations = $loader->load($this->getLangPath());
+        $translationFiles = $loader->load($this->getLangPath());
 
-        $this->assertCount(3, $translations);
+        $this->assertCount(3, $translationFiles);
 
-        $this->assertEquals(null, $translations[0]->vendor);
-        $this->assertEquals('_json', $translations[0]->file);
+        $this->assertInstanceOf(TranslationFile::class, $translationFiles[0]);
+        $this->assertEquals(null, $translationFiles[0]->vendor);
+        $this->assertEquals('_json', $translationFiles[0]->filename);
         $this->assertEquals([
             'This is a JSON translation.' => [
                 'en' => 'This is a JSON translation.',
                 'nl' => 'Dit is een JSON vertaling.',
             ],
-        ], $translations[0]->translations);
+        ], $translationFiles[0]->translations);
 
-        $this->assertEquals(null, $translations[1]->vendor);
-        $this->assertEquals('auth', $translations[1]->file);
+        $this->assertInstanceOf(TranslationFile::class, $translationFiles[1]);
+        $this->assertEquals(null, $translationFiles[1]->vendor);
+        $this->assertEquals('auth', $translationFiles[1]->filename);
         $this->assertEquals([
             'login.password' => [
                 'en' => 'password incorrect',
@@ -60,15 +55,16 @@ class LaravelFileLoaderTest extends TestCase
             'session.expired' => [
                 'en' => 'session expired',
             ],
-        ], $translations[1]->translations);
+        ], $translationFiles[1]->translations);
 
-        $this->assertEquals('package', $translations[2]->vendor);
-        $this->assertEquals('langfile', $translations[2]->file);
+        $this->assertInstanceOf(TranslationFile::class, $translationFiles[2]);
+        $this->assertEquals('package', $translationFiles[2]->vendor);
+        $this->assertEquals('langfile', $translationFiles[2]->filename);
         $this->assertEquals([
             'some.key' => [
                 'en' => 'vendor translation',
             ],
-        ], $translations[2]->translations);
+        ], $translationFiles[2]->translations);
     }
 
     /**

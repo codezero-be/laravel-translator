@@ -57,15 +57,12 @@ class LaravelFileLoader implements FileLoader
         $files = $this->listTranslationFiles($langPath, 'json');
 
         foreach ($files as $file) {
-            $library = $this->findOrMakeTranslationFile('_json', $vendor);
+            $translationFile = $this->findOrMakeTranslationFile('_json', $vendor);
             $translations = json_decode(File::get($file), true);
+            $locale = File::name($file);
 
             foreach ($translations as $key => $translation) {
-                $library->addTranslation(
-                    $key,
-                    File::name($file),
-                    $translation
-                );
+                $translationFile->addTranslation($key, $locale, $translation);
             }
         }
     }
@@ -87,18 +84,33 @@ class LaravelFileLoader implements FileLoader
             $locale = File::basename($localePath);
 
             foreach ($files as $file) {
-                $library = $this->findOrMakeTranslationFile(File::name($file), $vendor);
+                $translationFile = $this->findOrMakeTranslationFile(File::name($file), $vendor);
                 $translations = Arr::dot(include $file);
 
                 foreach ($translations as $key => $translation) {
-                    $library->addTranslation(
-                        $key,
-                        $locale,
-                        $translation
-                    );
+                    $translationFile->addTranslation($key, $locale, $translation);
                 }
             }
         }
+    }
+
+    /**
+     * Find a TranslationFile instance or make a new one if it doesn't exist.
+     *
+     * @param string $filename
+     * @param string|null $vendor
+     *
+     * @return \CodeZero\Translator\FileLoader\TranslationFile
+     */
+    protected function findOrMakeTranslationFile($filename, $vendor = null)
+    {
+        $index = "{$vendor}::{$filename}";
+
+        if ( ! array_key_exists($index, $this->translationFiles)) {
+            $this->translationFiles[$index] = TranslationFile::make($filename, $vendor);
+        }
+
+        return $this->translationFiles[$index];
     }
 
     /**
@@ -159,8 +171,8 @@ class LaravelFileLoader implements FileLoader
     protected function listTranslationFiles($path, $type)
     {
         return $this->listFiles($path)
-            ->filter(function ($file) use ($type) {
-                return File::extension($file) === $type;
+            ->filter(function ($filePath) use ($type) {
+                return File::extension($filePath) === $type;
             })->toArray();
     }
 
@@ -201,25 +213,6 @@ class LaravelFileLoader implements FileLoader
     protected function listSubdirectories($path)
     {
         return Collection::make(File::directories($path));
-    }
-
-    /**
-     * Find a TranslationFile instance or make a new one if it doesn't exist.
-     *
-     * @param string $file
-     * @param string|null $vendor
-     *
-     * @return \CodeZero\Translator\FileLoader\TranslationFile
-     */
-    protected function findOrMakeTranslationFile($file, $vendor = null)
-    {
-        $key = $vendor ? "{$vendor}/{$file}" : $file;
-
-        if ( ! array_key_exists($key, $this->translationFiles)) {
-            $this->translationFiles[$key] = new TranslationFile($file, $vendor);
-        }
-
-        return $this->translationFiles[$key];
     }
 
     /**
