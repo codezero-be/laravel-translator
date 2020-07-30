@@ -49,4 +49,23 @@ class LoadedFileTest extends TestCase
             ]
         ], $translations->translations);
     }
+
+    /** @test */
+    public function it_converts_to_an_array()
+    {
+        $translations = LoadedFile::make('fileName', 'vendorName');
+        $translations->addTranslation('key', 'en', 'translation [en]');
+        $translations->addTranslation('key', 'nl', 'translation [nl]');
+
+        $this->assertEquals([
+            'vendor' => 'vendorName',
+            'filename' => 'fileName',
+            'translations' => [
+                'key' => [
+                    'en' => 'translation [en]',
+                    'nl' => 'translation [nl]',
+                ],
+            ],
+        ], $translations->toArray());
+    }
 }
