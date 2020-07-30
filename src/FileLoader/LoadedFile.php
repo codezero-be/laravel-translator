@@ -31,12 +31,13 @@ class LoadedFile
      *
      * @param string $filename
      * @param string|null $vendor
+     * @param array $translations
      */
-    public function __construct($filename, $vendor = null)
+    public function __construct($filename, $vendor = null, $translations = [])
     {
         $this->vendor = $vendor;
         $this->filename = $filename;
-        $this->translations = [];
+        $this->translations = $translations;
     }
 
     /**
@@ -44,12 +45,13 @@ class LoadedFile
      *
      * @param string $filename
      * @param string|null $vendor
+     * @param array $translations
      *
      * @return \CodeZero\Translator\FileLoader\LoadedFile
      */
-    public static function make($filename, $vendor = null)
+    public static function make($filename, $vendor = null, $translations = [])
     {
-        return new static($filename, $vendor);
+        return new static($filename, $vendor, $translations);
     }
 
     /**

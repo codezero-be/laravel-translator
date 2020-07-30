@@ -19,6 +19,21 @@ class LoadedFileTest extends TestCase
         $this->assertEquals('fileName', $translations->filename);
         $this->assertEquals('vendorName', $translations->vendor);
         $this->assertEquals([], $translations->translations);
+
+        $translations = LoadedFile::make('fileName', 'vendorName', [
+            'key.in.file' => [
+                'en' => 'translation [en]',
+                'nl' => 'translation [nl]',
+            ],
+        ]);
+        $this->assertEquals('fileName', $translations->filename);
+        $this->assertEquals('vendorName', $translations->vendor);
+        $this->assertEquals([
+            'key.in.file' => [
+                'en' => 'translation [en]',
+                'nl' => 'translation [nl]',
+            ],
+        ], $translations->translations);
     }
 
     /** @test */
