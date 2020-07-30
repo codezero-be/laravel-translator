@@ -161,6 +161,47 @@ class ImporterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_replace_existing_translations()
+    {
+        $file = TranslationFile::create([
+            'vendor' => null,
+            'filename' => 'filename',
+        ]);
+
+        TranslationKey::create([
+            'file_id' => $file->id,
+            'key' => 'key',
+            'translations' => [
+                'en' => 'existing translation [en]',
+                'nl' => 'existing translation [nl]',
+            ],
+        ]);
+
+        $loadedFiles = [
+            (new LoadedFile('filename'))
+                ->addTranslation('key', 'en', 'new translation [en]')
+                ->addTranslation('key', 'nl', 'new translation [nl]')
+        ];
+
+        $importer = new Importer();
+        $importer->replaceExisting()->import($loadedFiles);
+
+        $translationFiles = TranslationFile::all();
+        $this->assertCount(1, $translationFiles);
+
+        $translationFile = $translationFiles[0];
+        $this->assertEquals(null, $translationFile->vendor);
+        $this->assertEquals('filename', $translationFile->filename);
+        $this->assertCount(1, $translationFile->translationKeys);
+
+        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals([
+            'en' => 'new translation [en]',
+            'nl' => 'new translation [nl]',
+        ], $translationFile->translationKeys[0]->translations);
+    }
+
+    /** @test */
     public function it_does_not_add_missing_translations_of_existing_keys_by_default()
     {
         $file = TranslationFile::create([

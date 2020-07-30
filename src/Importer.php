@@ -8,6 +8,27 @@ use CodeZero\Translator\Models\TranslationKey;
 class Importer
 {
     /**
+     * Replace existing translations.
+     *
+     * @var bool
+     */
+    protected $shouldReplaceExisting = false;
+
+    /**
+     * Replace existing translations.
+     *
+     * @param bool $replace
+     *
+     * @return \CodeZero\Translator\Importer
+     */
+    public function replaceExisting($replace = true)
+    {
+        $this->shouldReplaceExisting = $replace;
+
+        return $this;
+    }
+
+    /**
      * Import translations into the database.
      *
      * @param array $files
@@ -58,7 +79,7 @@ class Importer
             'key' => $key,
         ]);
 
-        if ( ! $translationKey->exists) {
+        if ($this->shouldReplaceExisting || ! $translationKey->exists) {
             $translationKey->translations = $translations;
             $translationKey->save();
         }
