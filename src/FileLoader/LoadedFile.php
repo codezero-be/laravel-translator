@@ -2,7 +2,7 @@
 
 namespace CodeZero\Translator\FileLoader;
 
-class TranslationFile
+class LoadedFile
 {
     /**
      * Vendor name, if any.
@@ -27,7 +27,7 @@ class TranslationFile
     public $translations;
 
     /**
-     * Create a new TranslationFile instance.
+     * Create a new LoadedFile instance.
      *
      * @param string $filename
      * @param string|null $vendor
@@ -39,12 +39,12 @@ class TranslationFile
     }
 
     /**
-     * Create a new TranslationFile instance.
+     * Create a new LoadedFile instance.
      *
      * @param string $filename
      * @param string|null $vendor
      *
-     * @return \CodeZero\Translator\FileLoader\TranslationFile
+     * @return \CodeZero\Translator\FileLoader\LoadedFile
      */
     public static function make($filename, $vendor = null)
     {
@@ -58,7 +58,7 @@ class TranslationFile
      * @param string $locale
      * @param string $translation
      *
-     * @return \CodeZero\Translator\FileLoader\TranslationFile
+     * @return \CodeZero\Translator\FileLoader\LoadedFile
      */
     public function addTranslation($key, $locale, $translation)
     {

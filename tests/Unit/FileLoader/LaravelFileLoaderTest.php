@@ -3,7 +3,7 @@
 namespace CodeZero\Translator\Tests\Unit\FileLoader;
 
 use CodeZero\Translator\FileLoader\LaravelFileLoader;
-use CodeZero\Translator\FileLoader\TranslationFile;
+use CodeZero\Translator\FileLoader\LoadedFile;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Support\Facades\File;
 
@@ -30,23 +30,23 @@ class LaravelFileLoaderTest extends TestCase
         ]);
 
         $loader = new LaravelFileLoader();
-        $translationFiles = $loader->load($this->getLangPath());
+        $loadedFiles = $loader->load($this->getLangPath());
 
-        $this->assertCount(3, $translationFiles);
+        $this->assertCount(3, $loadedFiles);
 
-        $this->assertInstanceOf(TranslationFile::class, $translationFiles[0]);
-        $this->assertEquals(null, $translationFiles[0]->vendor);
-        $this->assertEquals('_json', $translationFiles[0]->filename);
+        $this->assertInstanceOf(LoadedFile::class, $loadedFiles[0]);
+        $this->assertEquals(null, $loadedFiles[0]->vendor);
+        $this->assertEquals('_json', $loadedFiles[0]->filename);
         $this->assertEquals([
             'This is a JSON translation.' => [
                 'en' => 'This is a JSON translation.',
                 'nl' => 'Dit is een JSON vertaling.',
             ],
-        ], $translationFiles[0]->translations);
+        ], $loadedFiles[0]->translations);
 
-        $this->assertInstanceOf(TranslationFile::class, $translationFiles[1]);
-        $this->assertEquals(null, $translationFiles[1]->vendor);
-        $this->assertEquals('auth', $translationFiles[1]->filename);
+        $this->assertInstanceOf(LoadedFile::class, $loadedFiles[1]);
+        $this->assertEquals(null, $loadedFiles[1]->vendor);
+        $this->assertEquals('auth', $loadedFiles[1]->filename);
         $this->assertEquals([
             'login.password' => [
                 'en' => 'password incorrect',
@@ -55,16 +55,16 @@ class LaravelFileLoaderTest extends TestCase
             'session.expired' => [
                 'en' => 'session expired',
             ],
-        ], $translationFiles[1]->translations);
+        ], $loadedFiles[1]->translations);
 
-        $this->assertInstanceOf(TranslationFile::class, $translationFiles[2]);
-        $this->assertEquals('package', $translationFiles[2]->vendor);
-        $this->assertEquals('langfile', $translationFiles[2]->filename);
+        $this->assertInstanceOf(LoadedFile::class, $loadedFiles[2]);
+        $this->assertEquals('package', $loadedFiles[2]->vendor);
+        $this->assertEquals('langfile', $loadedFiles[2]->filename);
         $this->assertEquals([
             'some.key' => [
                 'en' => 'vendor translation',
             ],
-        ], $translationFiles[2]->translations);
+        ], $loadedFiles[2]->translations);
     }
 
     /**

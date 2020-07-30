@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\File;
 class LaravelFileLoader implements FileLoader
 {
     /**
-     * Array of TranslationFile instances.
+     * Array of LoadedFile instances.
      *
      * @var array
      */
-    protected $translationFiles;
+    protected $loadedFiles;
 
     /**
      * Load translations.
@@ -27,7 +27,7 @@ class LaravelFileLoader implements FileLoader
     public function load($langPath = null)
     {
         $this->ensureDirectoryExists($langPath);
-        $this->translationFiles = [];
+        $this->loadedFiles = [];
 
         $libraryPaths = $this->listLibraryPaths($langPath);
 
@@ -37,7 +37,7 @@ class LaravelFileLoader implements FileLoader
             $this->loadPhpFiles($libraryPath, $vendor);
         }
 
-        return array_values($this->translationFiles);
+        return array_values($this->loadedFiles);
     }
 
     /**
@@ -57,12 +57,12 @@ class LaravelFileLoader implements FileLoader
         $files = $this->listTranslationFiles($langPath, 'json');
 
         foreach ($files as $file) {
-            $translationFile = $this->findOrMakeTranslationFile('_json', $vendor);
+            $loadedFile = $this->findOrMakeLoadedFile('_json', $vendor);
             $translations = json_decode(File::get($file), true);
             $locale = File::name($file);
 
             foreach ($translations as $key => $translation) {
-                $translationFile->addTranslation($key, $locale, $translation);
+                $loadedFile->addTranslation($key, $locale, $translation);
             }
         }
     }
@@ -84,33 +84,33 @@ class LaravelFileLoader implements FileLoader
             $locale = File::basename($localePath);
 
             foreach ($files as $file) {
-                $translationFile = $this->findOrMakeTranslationFile(File::name($file), $vendor);
+                $loadedFile = $this->findOrMakeLoadedFile(File::name($file), $vendor);
                 $translations = Arr::dot(include $file);
 
                 foreach ($translations as $key => $translation) {
-                    $translationFile->addTranslation($key, $locale, $translation);
+                    $loadedFile->addTranslation($key, $locale, $translation);
                 }
             }
         }
     }
 
     /**
-     * Find a TranslationFile instance or make a new one if it doesn't exist.
+     * Find a LoadedFile instance or make a new one if it doesn't exist.
      *
      * @param string $filename
      * @param string|null $vendor
      *
-     * @return \CodeZero\Translator\FileLoader\TranslationFile
+     * @return \CodeZero\Translator\FileLoader\LoadedFile
      */
-    protected function findOrMakeTranslationFile($filename, $vendor = null)
+    protected function findOrMakeLoadedFile($filename, $vendor = null)
     {
         $index = "{$vendor}::{$filename}";
 
-        if ( ! array_key_exists($index, $this->translationFiles)) {
-            $this->translationFiles[$index] = TranslationFile::make($filename, $vendor);
+        if ( ! array_key_exists($index, $this->loadedFiles)) {
+            $this->loadedFiles[$index] = LoadedFile::make($filename, $vendor);
         }
 
-        return $this->translationFiles[$index];
+        return $this->loadedFiles[$index];
     }
 
     /**
