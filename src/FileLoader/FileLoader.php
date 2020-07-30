@@ -7,16 +7,12 @@ interface FileLoader
     /**
      * Skip empty translations.
      *
-     * @return \CodeZero\Translator\FileLoader\FileLoader
-     */
-    public function skipEmpty();
-
-    /**
-     * Don't skip empty translations.
+     * @param bool $skip
      *
      * @return \CodeZero\Translator\FileLoader\FileLoader
      */
-    public function includeEmpty();
+    public function skipEmpty($skip = true);
+
     /**
      * Load translations.
      *
