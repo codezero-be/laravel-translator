@@ -3,212 +3,199 @@
 namespace CodeZero\Translator\Tests\Unit;
 
 use CodeZero\Translator\Importer;
-use CodeZero\Translator\Models\Translation;
+use CodeZero\Translator\FileLoader\LoadedFile;
 use CodeZero\Translator\Models\TranslationFile;
+use CodeZero\Translator\Models\TranslationKey;
 use CodeZero\Translator\Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ImporterTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->importer = new Importer();
-    }
-
-    protected function getLangPath($directory)
-    {
-        return __DIR__.'/../_lang-test-files/'.$directory;
-    }
+    use RefreshDatabase;
 
     /** @test */
-    public function it_imports_translations()
+    public function it_imports_translation_file_objects()
     {
-        $this->importer->import($this->getLangPath('lang-test-basic'));
+        $loadedFiles = [
+            (new LoadedFile('filename', 'vendor-name'))
+                ->addTranslation('key-a', 'en', 'translation a [en]')
+                ->addTranslation('key-a', 'nl', 'translation a [nl]')
+                ->addTranslation('key-b', 'en', 'translation b [en]')
+                ->addTranslation('key-b', 'nl', 'translation b [nl]')
+        ];
+
+        $importer = new Importer();
+        $importer->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
-
         $this->assertCount(1, $translationFiles);
 
-        $file = $translationFiles[0];
+        $translationFile = $translationFiles[0];
+        $this->assertEquals('vendor-name', $translationFile->vendor);
+        $this->assertEquals('filename', $translationFile->filename);
+        $this->assertCount(2, $translationFile->translationKeys);
 
-        $this->assertEquals('app', $file->name);
-        $this->assertNull($file->package);
-        $this->assertCount(1, $file->translations);
+        $this->assertEquals('key-a', $translationFile->translationKeys[0]->key);
+        $this->assertEquals([
+            'en' => 'translation a [en]',
+            'nl' => 'translation a [nl]',
+        ], $translationFile->translationKeys[0]->translations);
 
-        $translation = $file->translations[0];
-
-        $this->assertEquals('app-test', $translation->key);
-        $this->assertEquals('App Test EN', $translation->en);
-        $this->assertEquals('App Test NL', $translation->nl);
+        $this->assertEquals('key-b', $translationFile->translationKeys[1]->key);
+        $this->assertEquals([
+            'en' => 'translation b [en]',
+            'nl' => 'translation b [nl]',
+        ], $translationFile->translationKeys[1]->translations);
     }
 
     /** @test */
-    public function it_imports_nested_array_keys()
+    public function it_imports_translation_file_arrays()
     {
-        $this->importer->import($this->getLangPath('lang-test-nested'));
+        $loadedFiles = [
+            [
+                'vendor' => 'vendor-name',
+                'filename' => 'filename',
+                'translations' => [
+                    'key-a' => [
+                        'en' => 'translation a [en]',
+                        'nl' => 'translation a [nl]',
+                    ],
+                    'key-b' => [
+                        'en' => 'translation b [en]',
+                        'nl' => 'translation b [nl]',
+                    ],
+                ],
+            ],
+        ];
+
+        $importer = new Importer();
+        $importer->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
-
         $this->assertCount(1, $translationFiles);
 
-        $file = $translationFiles[0];
+        $translationFile = $translationFiles[0];
+        $this->assertEquals('vendor-name', $translationFile->vendor);
+        $this->assertEquals('filename', $translationFile->filename);
+        $this->assertCount(2, $translationFile->translationKeys);
 
-        $this->assertEquals('app', $file->name);
-        $this->assertNull($file->package);
-        $this->assertCount(1, $file->translations);
+        $this->assertEquals('key-a', $translationFile->translationKeys[0]->key);
+        $this->assertEquals([
+            'en' => 'translation a [en]',
+            'nl' => 'translation a [nl]',
+        ], $translationFile->translationKeys[0]->translations);
 
-        $translation = $file->translations[0];
-
-        $this->assertEquals('nested.app.test', $translation->key);
-        $this->assertEquals('App Test EN', $translation->en);
-        $this->assertEquals('App Test NL', $translation->nl);
+        $this->assertEquals('key-b', $translationFile->translationKeys[1]->key);
+        $this->assertEquals([
+            'en' => 'translation b [en]',
+            'nl' => 'translation b [nl]',
+        ], $translationFile->translationKeys[1]->translations);
     }
 
     /** @test */
-    public function it_imports_package_translations()
+    public function vendor_is_optional()
     {
-        $this->importer->import($this->getLangPath('lang-test-package'));
+        $loadedFiles = [
+            (new LoadedFile('filename'))
+                ->addTranslation('key', 'en', 'translation [en]')
+                ->addTranslation('key', 'nl', 'translation [nl]')
+        ];
+
+        $importer = new Importer();
+        $importer->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
-
-        $this->assertCount(2, $translationFiles);
-
-        $file = $translationFiles[0];
-
-        $this->assertEquals('app', $file->name);
-        $this->assertNull($file->package);
-        $this->assertCount(1, $file->translations);
-
-        $translation = $file->translations[0];
-
-        $this->assertEquals('app-test', $translation->key);
-        $this->assertEquals('App Test EN', $translation->en);
-        $this->assertEquals('App Test NL', $translation->nl);
-
-        $file = $translationFiles[1];
-
-        $this->assertEquals('feature', $file->name);
-        $this->assertEquals('some-package', $file->package);
-        $this->assertCount(2, $file->translations);
-
-        $translation = $file->translations[0];
-
-        $this->assertEquals('package-test-a', $translation->key);
-        $this->assertEquals('Package Test A EN', $translation->en);
-        $this->assertNull($translation->nl);
-
-        $translation = $file->translations[1];
-
-        $this->assertEquals('package-test-b', $translation->key);
-        $this->assertEquals('Package Test B EN', $translation->en);
-        $this->assertNull($translation->nl);
-    }
-
-    /** @test */
-    public function it_imports_html_content()
-    {
-        $contents = file_get_contents($this->getLangPath('lang-test-html/en/sample.html'));
-
-        $this->importer->import($this->getLangPath('lang-test-html'));
-
-        $this->assertEquals($contents, Translation::first()->en);
-    }
-
-    /** @test */
-    public function it_cleans_up_the_database_before_import()
-    {
-        factory(Translation::class, 5)->create();
-
-        $this->assertCount(5, TranslationFile::all());
-        $this->assertCount(5, Translation::all());
-
-        $this->importer->import($this->getLangPath('lang-test-basic'));
-
-        $translationFiles = TranslationFile::all();
-
         $this->assertCount(1, $translationFiles);
 
-        $file = $translationFiles[0];
+        $translationFile = $translationFiles[0];
+        $this->assertEquals(null, $translationFile->vendor);
+        $this->assertEquals('filename', $translationFile->filename);
+        $this->assertCount(1, $translationFile->translationKeys);
 
-        $this->assertEquals('app', $file->name);
-        $this->assertNull($file->package);
-        $this->assertCount(1, $file->translations);
-
-        $translation = $file->translations[0];
-
-        $this->assertEquals('app-test', $translation->key);
-        $this->assertEquals('App Test EN', $translation->en);
-        $this->assertEquals('App Test NL', $translation->nl);
+        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals([
+            'en' => 'translation [en]',
+            'nl' => 'translation [nl]',
+        ], $translationFile->translationKeys[0]->translations);
     }
 
     /** @test */
-    public function it_syncs_imported_translations_with_existing_ones()
+    public function it_does_not_replace_existing_translations_by_default()
     {
-        $translationFile = factory(TranslationFile::class)->create(['name' => 'app']);
-        $translation = factory(Translation::class)->create([
-            'file_id' => $translationFile->id,
-            'key' => 'app-test',
-            'body' => [
-                'fr' => 'App Test FR',
+        $file = TranslationFile::create([
+            'vendor' => null,
+            'filename' => 'filename',
+        ]);
+
+        TranslationKey::create([
+            'file_id' => $file->id,
+            'key' => 'key',
+            'translations' => [
+                'en' => 'existing translation [en]',
+                'nl' => 'existing translation [nl]',
             ],
         ]);
 
-        $this->assertNull($translation->en);
-        $this->assertNull($translation->nl);
-        $this->assertEquals('App Test FR', $translation->fr);
+        $loadedFiles = [
+            (new LoadedFile('filename'))
+                ->addTranslation('key', 'en', 'new translation [en]')
+                ->addTranslation('key', 'nl', 'new translation [nl]')
+        ];
 
-        $this->importer->sync($this->getLangPath('lang-test-basic'));
+        $importer = new Importer();
+        $importer->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
-
         $this->assertCount(1, $translationFiles);
-        $this->assertEquals('app', $translationFiles->first()->name);
-        $this->assertCount(1, $translationFiles->first()->translations);
 
-        $translation = $translationFiles->first()->translations->first();
+        $translationFile = $translationFiles[0];
+        $this->assertEquals(null, $translationFile->vendor);
+        $this->assertEquals('filename', $translationFile->filename);
+        $this->assertCount(1, $translationFile->translationKeys);
 
-        $this->assertEquals('app-test', $translation->key);
-        $this->assertEquals('App Test EN', $translation->en);
-        $this->assertEquals('App Test NL', $translation->nl);
-        $this->assertEquals('App Test FR', $translation->fr);
+        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals([
+            'en' => 'existing translation [en]',
+            'nl' => 'existing translation [nl]',
+        ], $translationFile->translationKeys[0]->translations);
     }
 
     /** @test */
-    public function language_files_win_in_case_of_conflicts()
+    public function it_does_not_add_missing_translations_of_existing_keys_by_default()
     {
-        $translationFile = factory(TranslationFile::class)->create(['name' => 'app']);
-        $translation = factory(Translation::class)->create([
-            'file_id' => $translationFile->id,
-            'key' => 'app-test',
-            'body' => [
-                'en' => 'Some Value',
+        $file = TranslationFile::create([
+            'vendor' => null,
+            'filename' => 'filename',
+        ]);
+
+        TranslationKey::create([
+            'file_id' => $file->id,
+            'key' => 'key',
+            'translations' => [
+                'en' => 'existing translation [en]',
             ],
         ]);
 
-        $this->assertEquals('Some Value', $translation->en);
+        $loadedFiles = [
+            (new LoadedFile('filename'))
+                ->addTranslation('key', 'en', 'new translation [en]')
+                ->addTranslation('key', 'nl', 'new translation [nl]')
+        ];
 
-        $this->importer->sync($this->getLangPath('lang-test-basic'));
+        $importer = new Importer();
+        $importer->import($loadedFiles);
 
-        $this->assertEquals('App Test EN', $translation->fresh()->en);
-    }
+        $translationFiles = TranslationFile::all();
+        $this->assertCount(1, $translationFiles);
 
-    /** @test */
-    public function database_translations_can_be_preferred_in_case_of_conflicts()
-    {
-        $translationFile = factory(TranslationFile::class)->create(['name' => 'app']);
-        $translation = factory(Translation::class)->create([
-            'file_id' => $translationFile->id,
-            'key' => 'app-test',
-            'body' => [
-                'en' => 'Some Value',
-            ],
-        ]);
+        $translationFile = $translationFiles[0];
+        $this->assertEquals(null, $translationFile->vendor);
+        $this->assertEquals('filename', $translationFile->filename);
+        $this->assertCount(1, $translationFile->translationKeys);
 
-        $this->assertEquals('Some Value', $translation->en);
-
-        $this->importer->databaseWins()->sync($this->getLangPath('lang-test-basic'));
-
-        $this->assertEquals('Some Value', $translation->fresh()->en);
+        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals([
+            'en' => 'existing translation [en]',
+        ], $translationFile->translationKeys[0]->translations);
     }
 }
