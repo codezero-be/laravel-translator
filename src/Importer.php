@@ -15,6 +15,13 @@ class Importer
     protected $shouldReplaceExisting = false;
 
     /**
+     * Add missing translations to existing translation files.
+     *
+     * @var bool
+     */
+    protected $shouldAddMissing = false;
+
+    /**
      * Replace existing translations.
      *
      * @param bool $replace
@@ -24,6 +31,20 @@ class Importer
     public function replaceExisting($replace = true)
     {
         $this->shouldReplaceExisting = $replace;
+
+        return $this;
+    }
+
+    /**
+     * Add missing translations to existing translation files.
+     *
+     * @param bool $add
+     *
+     * @return \CodeZero\Translator\Importer
+     */
+    public function addMissing($add = true)
+    {
+        $this->shouldAddMissing = $add;
 
         return $this;
     }
@@ -43,7 +64,7 @@ class Importer
     }
 
     /**
-     * Import a translation file.
+     * Import translations of the given file.
      *
      * @param array $file
      *
@@ -56,10 +77,14 @@ class Importer
             'filename' => $file['filename'],
         ]);
 
+        if ($translationFile->exists && ! $this->shouldAddMissing && ! $this->shouldReplaceExisting) {
+            return;
+        }
+
         $translationFile->save();
 
         foreach ($file['translations'] as $key => $translations) {
-            $this->importTranslations($translationFile, $key, $translations);
+            $this->importTranslationKey($translationFile, $key, $translations);
         }
     }
 
@@ -72,16 +97,41 @@ class Importer
      *
      * @return void
      */
-    protected function importTranslations($translationFile, $key, $translations)
+    protected function importTranslationKey($translationFile, $key, $translations)
     {
         $translationKey = TranslationKey::firstOrNew([
             'file_id' => $translationFile->id,
             'key' => $key,
         ]);
 
-        if ($this->shouldReplaceExisting || ! $translationKey->exists) {
-            $translationKey->translations = $translations;
-            $translationKey->save();
+        foreach ($translations as $locale => $translation) {
+            $this->importTranslation($translationFile, $translationKey, $locale, $translation);
         }
+    }
+
+    /**
+     * Import a translation of the given key and file in a specific locale.
+     *
+     * @param \CodeZero\Translator\Models\TranslationFile $translationFile
+     * @param \CodeZero\Translator\Models\TranslationKey $translationKey
+     * @param string $locale
+     * @param string $translation
+     *
+     * @return void
+     */
+    protected function importTranslation($translationFile, $translationKey, $locale, $translation)
+    {
+        $existingTranslation = $translationKey->getTranslation($locale);
+
+        if ( ! $translationFile->wasRecentlyCreated && $existingTranslation === null && ! $this->shouldAddMissing) {
+            return;
+        }
+
+        if ( ! $translationFile->wasRecentlyCreated && $existingTranslation !== null && ! $this->shouldReplaceExisting) {
+            return;
+        }
+
+        $translationKey->addTranslation($locale, $translation);
+        $translationKey->save();
     }
 }
