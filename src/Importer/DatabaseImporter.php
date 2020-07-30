@@ -1,11 +1,11 @@
 <?php
 
-namespace CodeZero\Translator;
+namespace CodeZero\Translator\Importer;
 
 use CodeZero\Translator\Models\TranslationFile;
 use CodeZero\Translator\Models\TranslationKey;
 
-class Importer
+class DatabaseImporter implements Importer
 {
     /**
      * Replace existing translations.
@@ -26,7 +26,7 @@ class Importer
      *
      * @param bool $replace
      *
-     * @return \CodeZero\Translator\Importer
+     * @return \CodeZero\Translator\Importer\Importer
      */
     public function replaceExisting($replace = true)
     {
@@ -40,7 +40,7 @@ class Importer
      *
      * @param bool $add
      *
-     * @return \CodeZero\Translator\Importer
+     * @return \CodeZero\Translator\Importer\Importer
      */
     public function addMissing($add = true)
     {

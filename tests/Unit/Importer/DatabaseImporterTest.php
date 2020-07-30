@@ -1,15 +1,15 @@
 <?php
 
-namespace CodeZero\Translator\Tests\Unit;
+namespace CodeZero\Translator\Tests\Unit\Importer;
 
-use CodeZero\Translator\Importer;
+use CodeZero\Translator\Importer\DatabaseImporter;
 use CodeZero\Translator\FileLoader\LoadedFile;
 use CodeZero\Translator\Models\TranslationFile;
 use CodeZero\Translator\Models\TranslationKey;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ImporterTest extends TestCase
+class DatabaseImporterTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -24,7 +24,7 @@ class ImporterTest extends TestCase
                 ->addTranslation('key-b', 'nl', 'translation b [nl]')
         ];
 
-        $importer = new Importer();
+        $importer = new DatabaseImporter();
         $importer->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
@@ -68,7 +68,7 @@ class ImporterTest extends TestCase
             ],
         ];
 
-        $importer = new Importer();
+        $importer = new DatabaseImporter();
         $importer->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
@@ -101,7 +101,7 @@ class ImporterTest extends TestCase
                 ->addTranslation('key', 'nl', 'translation [nl]')
         ];
 
-        $importer = new Importer();
+        $importer = new DatabaseImporter();
         $importer->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
@@ -142,7 +142,7 @@ class ImporterTest extends TestCase
                 ->addTranslation('key', 'nl', 'new translation [nl]')
         ];
 
-        $importer = new Importer();
+        $importer = new DatabaseImporter();
         $importer->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
@@ -183,7 +183,7 @@ class ImporterTest extends TestCase
                 ->addTranslation('key', 'nl', 'new translation [nl]')
         ];
 
-        $importer = new Importer();
+        $importer = new DatabaseImporter();
         $importer->replaceExisting()->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
@@ -223,7 +223,7 @@ class ImporterTest extends TestCase
                 ->addTranslation('key', 'nl', 'new translation [nl]')
         ];
 
-        $importer = new Importer();
+        $importer = new DatabaseImporter();
         $importer->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
@@ -262,7 +262,7 @@ class ImporterTest extends TestCase
                 ->addTranslation('key', 'nl', 'new translation [nl]')
         ];
 
-        $importer = new Importer();
+        $importer = new DatabaseImporter();
         $importer->addMissing()->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
