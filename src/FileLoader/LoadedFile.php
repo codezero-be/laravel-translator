@@ -70,6 +70,16 @@ class LoadedFile
     }
 
     /**
+     * Check if this file has any translations.
+     *
+     * @return bool
+     */
+    public function hasTranslations()
+    {
+        return count($this->translations) > 0;
+    }
+
+    /**
      * Convert this object to am associative array.
      *
      * @return array

@@ -17,6 +17,37 @@ class LaravelFileLoader implements FileLoader
     protected $loadedFiles;
 
     /**
+     * Skip empty translations.
+     *
+     * @var bool
+     */
+    protected $skipEmpty = false;
+
+    /**
+     * Skip empty translations.
+     *
+     * @return \CodeZero\Translator\FileLoader\FileLoader
+     */
+    public function skipEmpty()
+    {
+        $this->skipEmpty = true;
+
+        return $this;
+    }
+
+    /**
+     * Don't skip empty translations.
+     *
+     * @return \CodeZero\Translator\FileLoader\FileLoader
+     */
+    public function includeEmpty()
+    {
+        $this->skipEmpty = false;
+
+        return $this;
+    }
+
+    /**
      * Load translations.
      *
      * @param string|null $langPath
@@ -57,13 +88,9 @@ class LaravelFileLoader implements FileLoader
         $files = $this->listTranslationFiles($langPath, 'json');
 
         foreach ($files as $file) {
-            $loadedFile = $this->findOrMakeLoadedFile('_json', $vendor);
-            $translations = json_decode(File::get($file), true);
             $locale = File::name($file);
-
-            foreach ($translations as $key => $translation) {
-                $loadedFile->addTranslation($key, $locale, $translation);
-            }
+            $translations = json_decode(File::get($file), true);
+            $this->loadFile($translations, $locale, '_json', $vendor);
         }
     }
 
@@ -84,13 +111,37 @@ class LaravelFileLoader implements FileLoader
             $locale = File::basename($localePath);
 
             foreach ($files as $file) {
-                $loadedFile = $this->findOrMakeLoadedFile(File::name($file), $vendor);
+                $filename = File::name($file);
                 $translations = Arr::dot(include $file);
-
-                foreach ($translations as $key => $translation) {
-                    $loadedFile->addTranslation($key, $locale, $translation);
-                }
+                $this->loadFile($translations, $locale, $filename, $vendor);
             }
+        }
+    }
+
+    /**
+     * Load a translation file.
+     *
+     * @param array $translations
+     *
+     * @param string $locale
+     * @param string $filename
+     * @param string|null $vendor
+     *
+     * @return void
+     */
+    protected function loadFile($translations, $locale, $filename, $vendor = null)
+    {
+        $loadedFile = $this->findOrMakeLoadedFile($filename, $vendor);
+
+        foreach ($translations as $key => $translation) {
+            if ( ! empty($translation) || ! $this->skipEmpty) {
+                $loadedFile->addTranslation($key, $locale, $translation);
+            }
+        }
+
+        if ( ! $this->hasLoadedFile($filename, $vendor)
+            && ($loadedFile->hasTranslations() || ! $this->skipEmpty)) {
+            $this->addLoadedFile($loadedFile);
         }
     }
 
@@ -104,13 +155,53 @@ class LaravelFileLoader implements FileLoader
      */
     protected function findOrMakeLoadedFile($filename, $vendor = null)
     {
-        $index = "{$vendor}::{$filename}";
+        $index = $this->getLoadedFileIndex($filename, $vendor);
 
-        if ( ! array_key_exists($index, $this->loadedFiles)) {
-            $this->loadedFiles[$index] = LoadedFile::make($filename, $vendor);
-        }
+        return $this->loadedFiles[$index] ?? LoadedFile::make($filename, $vendor);
+    }
 
-        return $this->loadedFiles[$index];
+    /**
+     * Add a LoadedFile.
+     *
+     * @param \CodeZero\Translator\FileLoader\LoadedFile $loadedFile
+     *
+     * @return void
+     */
+    protected function addLoadedFile($loadedFile)
+    {
+        $index = $this->getLoadedFileIndex($loadedFile->filename, $loadedFile->vendor);
+
+        $this->loadedFiles[$index] = $loadedFile;
+    }
+
+    /**
+     * Check if a file is already loaded.
+     *
+     * @param string $filename
+     * @param string|null $vendor
+     *
+     * @return bool
+     */
+    protected function hasLoadedFile($filename, $vendor = null)
+    {
+        return array_key_exists(
+            $this->getLoadedFileIndex($filename, $vendor),
+            $this->loadedFiles
+        );
+    }
+
+    /**
+     * Get the index key that identifies a LoadedFile
+     * in the `$this->loadedFiles` array.
+     *
+     * @param string $filename
+     * @param string|null $vendor
+     *
+     * @return string
+     */
+    protected function getLoadedFileIndex($filename, $vendor = null)
+    {
+        return "{$vendor}::{$filename}";
     }
 
     /**

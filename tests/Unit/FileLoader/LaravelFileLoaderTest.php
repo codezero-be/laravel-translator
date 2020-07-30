@@ -67,6 +67,43 @@ class LaravelFileLoaderTest extends TestCase
         ], $loadedFiles[2]->translations);
     }
 
+    /** @test */
+    public function it_can_ignore_empty_translations()
+    {
+        $this->createTranslationFile('en/auth.php', [
+            'login' => ['password' => 'password incorrect'],
+            'session' => ['expired' => ''],
+        ]);
+        $this->createTranslationFile('vendor/package/en/langfile.php', []);
+        $this->createTranslationFile('nl.json', [
+            'This is a JSON translation.' => 'Dit is een JSON vertaling.',
+        ]);
+        $this->createTranslationFile('en.json', []);
+
+        $loader = new LaravelFileLoader();
+        $loadedFiles = $loader->skipEmpty()->load($this->getLangPath());
+
+        $this->assertCount(2, $loadedFiles);
+
+        $this->assertInstanceOf(LoadedFile::class, $loadedFiles[0]);
+        $this->assertEquals(null, $loadedFiles[0]->vendor);
+        $this->assertEquals('_json', $loadedFiles[0]->filename);
+        $this->assertEquals([
+            'This is a JSON translation.' => [
+                'nl' => 'Dit is een JSON vertaling.',
+            ],
+        ], $loadedFiles[0]->translations);
+
+        $this->assertInstanceOf(LoadedFile::class, $loadedFiles[1]);
+        $this->assertEquals(null, $loadedFiles[1]->vendor);
+        $this->assertEquals('auth', $loadedFiles[1]->filename);
+        $this->assertEquals([
+            'login.password' => [
+                'en' => 'password incorrect',
+            ],
+        ], $loadedFiles[1]->translations);
+    }
+
     /**
      * Setup the test environment.
      *

@@ -80,4 +80,16 @@ class LoadedFileTest extends TestCase
             'translations' => [],
         ], $translations->toArray());
     }
+
+    /** @test */
+    public function it_checks_if_it_has_translations()
+    {
+        $translations = LoadedFile::make('fileName');
+
+        $this->assertFalse($translations->hasTranslations());
+
+        $translations->addTranslation('key', 'en', 'translation [en]');
+
+        $this->assertTrue($translations->hasTranslations());
+    }
 }
