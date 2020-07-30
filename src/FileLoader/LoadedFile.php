@@ -82,16 +82,12 @@ class LoadedFile
     }
 
     /**
-     * Convert this object to am associative array.
+     * Convert this object to an associative array.
      *
      * @return array
      */
     public function toArray()
     {
-        return [
-            'vendor' => $this->vendor,
-            'filename' => $this->filename,
-            'translations' =>$this->translations,
-        ];
+        return (array) $this;
     }
 }
