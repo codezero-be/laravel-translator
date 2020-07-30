@@ -36,6 +36,7 @@ class LoadedFile
     {
         $this->vendor = $vendor;
         $this->filename = $filename;
+        $this->translations = [];
     }
 
     /**

@@ -13,12 +13,12 @@ class LoadedFileTest extends TestCase
         $translations = LoadedFile::make('fileName');
         $this->assertEquals('fileName', $translations->filename);
         $this->assertNull($translations->vendor);
-        $this->assertNull($translations->translations);
+        $this->assertEquals([], $translations->translations);
 
         $translations = LoadedFile::make('fileName', 'vendorName');
         $this->assertEquals('fileName', $translations->filename);
         $this->assertEquals('vendorName', $translations->vendor);
-        $this->assertNull($translations->translations);
+        $this->assertEquals([], $translations->translations);
     }
 
     /** @test */
@@ -66,6 +66,18 @@ class LoadedFileTest extends TestCase
                     'nl' => 'translation [nl]',
                 ],
             ],
+        ], $translations->toArray());
+    }
+
+    /** @test */
+    public function it_converts_empty_translations_to_an_empty_array()
+    {
+        $translations = LoadedFile::make('fileName', 'vendorName');
+
+        $this->assertEquals([
+            'vendor' => 'vendorName',
+            'filename' => 'fileName',
+            'translations' => [],
         ], $translations->toArray());
     }
 }
