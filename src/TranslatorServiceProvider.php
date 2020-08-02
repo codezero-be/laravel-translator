@@ -2,7 +2,6 @@
 
 namespace CodeZero\Translator;
 
-use CodeZero\Translator\Commands\FormatLangFiles;
 use CodeZero\Translator\Validators\UniqueTranslationKey;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
@@ -27,7 +26,6 @@ class TranslatorServiceProvider extends ServiceProvider
         $this->loadRoutes();
         $this->loadMigrations();
         $this->registerPublishableFiles();
-        $this->registerCommands();
         $this->registerValidators();
 
         Request::macro('optional', function ($keys) {
@@ -75,18 +73,6 @@ class TranslatorServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__."/../config/{$this->name}.php" => config_path("{$this->name}.php"),
         ], 'config');
-    }
-
-    /**
-     * Register the Artisan console commands.
-     *
-     * @return void
-     */
-    protected function registerCommands()
-    {
-        $this->commands([
-            FormatLangFiles::class,
-        ]);
     }
 
     /**

@@ -6,7 +6,6 @@ use CodeZero\Translator\TranslatorServiceProvider;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use Spatie\Translatable\TranslatableServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -52,7 +51,6 @@ abstract class TestCase extends BaseTestCase
     {
         return [
             TranslatorServiceProvider::class,
-            TranslatableServiceProvider::class,
         ];
     }
 }
