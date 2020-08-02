@@ -123,11 +123,11 @@ class DatabaseImporter implements Importer
     {
         $existingTranslation = $translationKey->getTranslation($locale);
 
-        if ( ! $translationFile->wasRecentlyCreated && $existingTranslation === null && ! $this->shouldAddMissing) {
+        if ( ! $translationFile->wasRecentlyCreated && ! $existingTranslation && ! $this->shouldAddMissing) {
             return;
         }
 
-        if ( ! $translationFile->wasRecentlyCreated && $existingTranslation !== null && ! $this->shouldReplaceExisting) {
+        if ( ! $translationFile->wasRecentlyCreated && $existingTranslation && ! $this->shouldReplaceExisting) {
             return;
         }
 

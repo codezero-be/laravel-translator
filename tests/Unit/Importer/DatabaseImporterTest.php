@@ -253,6 +253,7 @@ class DatabaseImporterTest extends TestCase
             'key' => 'key',
             'translations' => [
                 'en' => 'existing translation [en]',
+                'nl' => '',
             ],
         ]);
 
@@ -260,6 +261,7 @@ class DatabaseImporterTest extends TestCase
             (new LoadedFile('filename'))
                 ->addTranslation('key', 'en', 'new translation [en]')
                 ->addTranslation('key', 'nl', 'new translation [nl]')
+                ->addTranslation('key', 'fr', 'new translation [fr]')
         ];
 
         $importer = new DatabaseImporter();
@@ -277,6 +279,7 @@ class DatabaseImporterTest extends TestCase
         $this->assertEquals([
             'en' => 'existing translation [en]',
             'nl' => 'new translation [nl]',
+            'fr' => 'new translation [fr]',
         ], $translationFile->translationKeys[0]->translations);
     }
 }
