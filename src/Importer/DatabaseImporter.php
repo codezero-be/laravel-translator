@@ -22,6 +22,13 @@ class DatabaseImporter implements Importer
     protected $shouldAddMissing = false;
 
     /**
+     * Don't import empty translations.
+     *
+     * @var bool
+     */
+    protected $shouldSkipEmpty = false;
+
+    /**
      * Replace existing translations.
      *
      * @param bool $replace
@@ -45,6 +52,20 @@ class DatabaseImporter implements Importer
     public function addMissing($add = true)
     {
         $this->shouldAddMissing = $add;
+
+        return $this;
+    }
+
+    /**
+     * Don't import empty translations.
+     *
+     * @param bool $skip
+     *
+     * @return \CodeZero\Translator\Importer\Importer
+     */
+    public function skipEmpty($skip = true)
+    {
+        $this->shouldSkipEmpty = $skip;
 
         return $this;
     }
@@ -121,6 +142,10 @@ class DatabaseImporter implements Importer
      */
     protected function importTranslation($translationFile, $translationKey, $locale, $translation)
     {
+        if ( ! $translation && $this->shouldSkipEmpty) {
+            return;
+        }
+
         $existingTranslation = $translationKey->getTranslation($locale);
 
         if ( ! $translationFile->wasRecentlyCreated && ! $existingTranslation && ! $this->shouldAddMissing) {
