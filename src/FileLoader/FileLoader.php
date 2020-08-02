@@ -5,13 +5,13 @@ namespace CodeZero\Translator\FileLoader;
 interface FileLoader
 {
     /**
-     * Skip empty translations.
+     * Load empty translations.
      *
-     * @param bool $skip
+     * @param bool $load
      *
      * @return \CodeZero\Translator\FileLoader\FileLoader
      */
-    public function skipEmpty($skip = true);
+    public function loadEmpty($load = true);
 
     /**
      * Load translations.

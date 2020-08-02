@@ -17,22 +17,22 @@ class LaravelFileLoader implements FileLoader
     protected $loadedFiles;
 
     /**
-     * Skip empty translations.
+     * Load empty translations.
      *
      * @var bool
      */
-    protected $shouldSkipEmpty = false;
+    protected $shouldLoadEmpty = false;
 
     /**
-     * Skip empty translations.
+     * Load empty translations.
      *
-     * @param bool $skip
+     * @param bool $load
      *
      * @return \CodeZero\Translator\FileLoader\FileLoader
      */
-    public function skipEmpty($skip = true)
+    public function loadEmpty($load = true)
     {
-        $this->shouldSkipEmpty = $skip;
+        $this->shouldLoadEmpty = $load;
 
         return $this;
     }
@@ -124,13 +124,13 @@ class LaravelFileLoader implements FileLoader
         $loadedFile = $this->findOrMakeLoadedFile($filename, $vendor);
 
         foreach ($translations as $key => $translation) {
-            if ( ! empty($translation) || ! $this->shouldSkipEmpty) {
+            if ( ! empty($translation) || $this->shouldLoadEmpty) {
                 $loadedFile->addTranslation($key, $locale, $translation);
             }
         }
 
         if ( ! $this->hasLoadedFile($filename, $vendor)
-            && ($loadedFile->hasTranslations() || ! $this->shouldSkipEmpty)) {
+            && ($loadedFile->hasTranslations() || $this->shouldLoadEmpty)) {
             $this->addLoadedFile($loadedFile);
         }
     }

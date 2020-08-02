@@ -67,7 +67,7 @@ class LaravelFileLoaderTest extends FileTestCase
     }
 
     /** @test */
-    public function it_can_ignore_empty_translations()
+    public function it_does_not_load_empty_translations_by_default()
     {
         $this->createTranslationFile('en/auth.php', [
             'login' => ['password' => 'password incorrect'],
@@ -80,7 +80,7 @@ class LaravelFileLoaderTest extends FileTestCase
         $this->createTranslationFile('en.json', []);
 
         $loader = new LaravelFileLoader();
-        $loadedFiles = $loader->skipEmpty()->load($this->getLangPath());
+        $loadedFiles = $loader->load($this->getLangPath());
 
         $this->assertCount(2, $loadedFiles);
 
@@ -101,5 +101,50 @@ class LaravelFileLoaderTest extends FileTestCase
                 'en' => 'password incorrect',
             ],
         ], $loadedFiles[1]->translations);
+    }
+
+    /** @test */
+    public function it_can_load_empty_translations()
+    {
+        $this->createTranslationFile('en/auth.php', [
+            'login' => ['password' => 'password incorrect'],
+            'session' => ['expired' => ''],
+        ]);
+        $this->createTranslationFile('vendor/package/en/langfile.php', []);
+        $this->createTranslationFile('nl.json', [
+            'This is a JSON translation.' => 'Dit is een JSON vertaling.',
+        ]);
+        $this->createTranslationFile('en.json', []);
+
+        $loader = new LaravelFileLoader();
+        $loadedFiles = $loader->loadEmpty()->load($this->getLangPath());
+
+        $this->assertCount(3, $loadedFiles);
+
+        $this->assertInstanceOf(LoadedFile::class, $loadedFiles[0]);
+        $this->assertEquals(null, $loadedFiles[0]->vendor);
+        $this->assertEquals('_json', $loadedFiles[0]->filename);
+        $this->assertEquals([
+            'This is a JSON translation.' => [
+                'nl' => 'Dit is een JSON vertaling.',
+            ],
+        ], $loadedFiles[0]->translations);
+
+        $this->assertInstanceOf(LoadedFile::class, $loadedFiles[1]);
+        $this->assertEquals(null, $loadedFiles[1]->vendor);
+        $this->assertEquals('auth', $loadedFiles[1]->filename);
+        $this->assertEquals([
+            'login.password' => [
+                'en' => 'password incorrect',
+            ],
+            'session.expired' => [
+                'en' => '',
+            ],
+        ], $loadedFiles[1]->translations);
+
+        $this->assertInstanceOf(LoadedFile::class, $loadedFiles[2]);
+        $this->assertEquals('package', $loadedFiles[2]->vendor);
+        $this->assertEquals('langfile', $loadedFiles[2]->filename);
+        $this->assertEquals([], $loadedFiles[2]->translations);
     }
 }
