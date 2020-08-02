@@ -284,7 +284,7 @@ class DatabaseImporterTest extends TestCase
     }
 
     /** @test */
-    public function it_imports_empty_translations_by_default()
+    public function it_does_not_import_empty_translations_by_default()
     {
         $loadedFiles = [
             (new LoadedFile('filename'))
@@ -306,12 +306,11 @@ class DatabaseImporterTest extends TestCase
         $this->assertEquals('key', $translationFile->translationKeys[0]->key);
         $this->assertEquals([
             'en' => 'translation [en]',
-            'nl' => '',
         ], $translationFile->translationKeys[0]->translations);
     }
 
     /** @test */
-    public function it_can_skip_empty_translations()
+    public function it_can_import_empty_translations()
     {
         $loadedFiles = [
             (new LoadedFile('filename'))
@@ -320,7 +319,7 @@ class DatabaseImporterTest extends TestCase
         ];
 
         $importer = new DatabaseImporter();
-        $importer->skipEmpty()->import($loadedFiles);
+        $importer->importEmpty()->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
         $this->assertCount(1, $translationFiles);
@@ -333,6 +332,7 @@ class DatabaseImporterTest extends TestCase
         $this->assertEquals('key', $translationFile->translationKeys[0]->key);
         $this->assertEquals([
             'en' => 'translation [en]',
+            'nl' => '',
         ], $translationFile->translationKeys[0]->translations);
     }
 }

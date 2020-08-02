@@ -23,13 +23,13 @@ interface Importer
     public function addMissing($add = true);
 
     /**
-     * Don't import empty translations.
+     * Import empty translations.
      *
-     * @param bool $skip
+     * @param bool $import
      *
      * @return \CodeZero\Translator\Importer\Importer
      */
-    public function skipEmpty($skip = true);
+    public function importEmpty($import = true);
 
     /**
      * Import translations into the database.

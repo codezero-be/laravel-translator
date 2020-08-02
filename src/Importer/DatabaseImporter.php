@@ -22,11 +22,11 @@ class DatabaseImporter implements Importer
     protected $shouldAddMissing = false;
 
     /**
-     * Don't import empty translations.
+     * Import empty translations.
      *
      * @var bool
      */
-    protected $shouldSkipEmpty = false;
+    protected $shouldImportEmpty = false;
 
     /**
      * Replace existing translations.
@@ -57,15 +57,15 @@ class DatabaseImporter implements Importer
     }
 
     /**
-     * Don't import empty translations.
+     * Import empty translations.
      *
-     * @param bool $skip
+     * @param bool $import
      *
      * @return \CodeZero\Translator\Importer\Importer
      */
-    public function skipEmpty($skip = true)
+    public function importEmpty($import = true)
     {
-        $this->shouldSkipEmpty = $skip;
+        $this->shouldImportEmpty = $import;
 
         return $this;
     }
@@ -142,7 +142,7 @@ class DatabaseImporter implements Importer
      */
     protected function importTranslation($translationFile, $translationKey, $locale, $translation)
     {
-        if ( ! $translation && $this->shouldSkipEmpty) {
+        if ( ! $translation && ! $this->shouldImportEmpty) {
             return;
         }
 
