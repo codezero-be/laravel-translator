@@ -121,7 +121,7 @@ class DatabaseImporter implements Importer
             'filename' => $file['filename'],
         ]);
 
-        if ($translationFile->exists && ! $this->shouldFillMissing && ! $this->shouldReplaceExisting) {
+        if ($this->shouldRejectTranslationFile($translationFile)) {
             return;
         }
 
@@ -165,25 +165,83 @@ class DatabaseImporter implements Importer
      */
     protected function importTranslation($translationFile, $translationKey, $locale, $translation)
     {
-        if ( ! $translation && ! $this->shouldIncludeEmpty) {
-            return;
-        }
-
-        if ($this->locales && ! in_array($locale, $this->locales)) {
-            return;
-        }
-
         $existingTranslation = $translationKey->getTranslation($locale);
 
-        if ( ! $translationFile->wasRecentlyCreated && ! $existingTranslation && ! $this->shouldFillMissing) {
-            return;
-        }
-
-        if ( ! $translationFile->wasRecentlyCreated && $existingTranslation && ! $this->shouldReplaceExisting) {
+        if ($this->shouldRejectTranslation($translation)
+            || $this->shouldRejectLocale($locale)
+            || $this->shouldRejectToFillMissing($translationFile, $existingTranslation)
+            || $this->shouldRejectToReplaceExisting($translationFile, $existingTranslation)
+        ) {
             return;
         }
 
         $translationKey->addTranslation($locale, $translation);
         $translationKey->save();
+    }
+
+    /**
+     * Check if the given translation file should be handled at all.
+     *
+     * @param \CodeZero\Translator\Models\TranslationFile $translationFile
+     *
+     * @return bool
+     */
+    protected function shouldRejectTranslationFile($translationFile)
+    {
+        return $translationFile->exists && ! $this->shouldFillMissing && ! $this->shouldReplaceExisting;
+    }
+
+    /**
+     * Check if the translation is empty and
+     * we need to reject empty values.
+     *
+     * @param string $translation
+     *
+     * @return bool
+     */
+    protected function shouldRejectTranslation($translation)
+    {
+        return ! $translation && ! $this->shouldIncludeEmpty;
+    }
+
+    /**
+     * Check if specific locales should be imported and
+     * if the given locale is not in that list.
+     *
+     * @param string $locale
+     *
+     * @return bool
+     */
+    protected function shouldRejectLocale($locale)
+    {
+        return $this->locales && ! in_array($locale, $this->locales);
+    }
+
+    /**
+     * Check if an existing translation file is missing a translation
+     * and if we should not fill missing translations.
+     *
+     * @param \CodeZero\Translator\Models\TranslationFile $translationFile
+     * @param string|null $existingTranslation
+     *
+     * @return bool
+     */
+    protected function shouldRejectToFillMissing($translationFile, $existingTranslation)
+    {
+        return ! $translationFile->wasRecentlyCreated && ! $existingTranslation && ! $this->shouldFillMissing;
+    }
+
+    /**
+     * Check if if a translation already exists and we
+     * should not replace existing translations.
+     *
+     * @param \CodeZero\Translator\Models\TranslationFile $translationFile
+     * @param string|null $existingTranslation
+     *
+     * @return bool
+     */
+    protected function shouldRejectToReplaceExisting($translationFile, $existingTranslation)
+    {
+        return ! $translationFile->wasRecentlyCreated && $existingTranslation && ! $this->shouldReplaceExisting;
     }
 }
