@@ -147,4 +147,52 @@ class LaravelFileLoaderTest extends FileTestCase
         $this->assertEquals('langfile', $loadedFiles[2]->filename);
         $this->assertEquals([], $loadedFiles[2]->translations);
     }
+
+    /** @test */
+    public function it_can_load_specific_locales()
+    {
+        $this->createTranslationFile('en/filename.php', [
+            'key' => 'translation [en]',
+        ]);
+        $this->createTranslationFile('nl/filename.php', [
+            'key' => 'translation [nl]',
+        ]);
+        $this->createTranslationFile('fr/filename.php', [
+            'key' => 'translation [fr]',
+        ]);
+        $this->createTranslationFile('en.json', [
+            'key' => 'translation [en]',
+        ]);
+        $this->createTranslationFile('nl.json', [
+            'key' => 'translation [nl]',
+        ]);
+        $this->createTranslationFile('fr.json', [
+            'key' => 'translation [fr]',
+        ]);
+
+        $loader = new LaravelFileLoader();
+        $loadedFiles = $loader->onlyLocales(['en', 'nl'])->load($this->getLangPath());
+
+        $this->assertCount(2, $loadedFiles);
+
+        $this->assertInstanceOf(LoadedFile::class, $loadedFiles[0]);
+        $this->assertEquals(null, $loadedFiles[0]->vendor);
+        $this->assertEquals('_json', $loadedFiles[0]->filename);
+        $this->assertEquals([
+            'key' => [
+                'en' => 'translation [en]',
+                'nl' => 'translation [nl]',
+            ],
+        ], $loadedFiles[0]->translations);
+
+        $this->assertInstanceOf(LoadedFile::class, $loadedFiles[1]);
+        $this->assertEquals(null, $loadedFiles[1]->vendor);
+        $this->assertEquals('filename', $loadedFiles[1]->filename);
+        $this->assertEquals([
+            'key' => [
+                'en' => 'translation [en]',
+                'nl' => 'translation [nl]',
+            ],
+        ], $loadedFiles[1]->translations);
+    }
 }

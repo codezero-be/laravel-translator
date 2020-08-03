@@ -17,11 +17,33 @@ class LaravelFileLoader implements FileLoader
     protected $loadedFiles;
 
     /**
+     * Locales that should be loaded.
+     *
+     * @var array|null
+     */
+    protected $locales;
+
+    /**
      * Load empty translations.
      *
      * @var bool
      */
     protected $shouldIncludeEmpty = false;
+
+    /**
+     * Set the locales that should be loaded.
+     * By default it will load all locales in the translation files.
+     *
+     * @param array|null $locales
+     *
+     * @return \CodeZero\Translator\FileLoader\FileLoader
+     */
+    public function onlyLocales($locales)
+    {
+        $this->locales = $locales;
+
+        return $this;
+    }
 
     /**
      * Load empty translations.
@@ -79,6 +101,11 @@ class LaravelFileLoader implements FileLoader
 
         foreach ($files as $file) {
             $locale = File::name($file);
+
+            if ($this->locales && ! in_array($locale, $this->locales)) {
+                continue;
+            }
+
             $translations = json_decode(File::get($file), true);
             $this->loadFile($translations, $locale, '_json', $vendor);
         }
@@ -99,6 +126,10 @@ class LaravelFileLoader implements FileLoader
         foreach ($localePaths as $localePath) {
             $files = $this->listTranslationFiles($localePath, 'php');
             $locale = File::basename($localePath);
+
+            if ($this->locales && ! in_array($locale, $this->locales)) {
+                continue;
+            }
 
             foreach ($files as $file) {
                 $filename = File::name($file);
