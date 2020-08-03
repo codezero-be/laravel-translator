@@ -335,4 +335,32 @@ class DatabaseImporterTest extends TestCase
             'nl' => '',
         ], $translationFile->translationKeys[0]->translations);
     }
+
+    /** @test */
+    public function it_can_import_specific_locales()
+    {
+        $loadedFiles = [
+            (new LoadedFile('filename'))
+                ->addTranslation('key', 'en', 'translation [en]')
+                ->addTranslation('key', 'nl', 'translation [nl]')
+                ->addTranslation('key', 'fr', 'translation [fr]')
+        ];
+
+        $importer = new DatabaseImporter();
+        $importer->onlyLocales(['en', 'nl'])->import($loadedFiles);
+
+        $translationFiles = TranslationFile::all();
+        $this->assertCount(1, $translationFiles);
+
+        $translationFile = $translationFiles[0];
+        $this->assertEquals(null, $translationFile->vendor);
+        $this->assertEquals('filename', $translationFile->filename);
+        $this->assertCount(1, $translationFile->translationKeys);
+
+        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals([
+            'en' => 'translation [en]',
+            'nl' => 'translation [nl]',
+        ], $translationFile->translationKeys[0]->translations);
+    }
 }

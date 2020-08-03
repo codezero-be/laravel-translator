@@ -8,6 +8,13 @@ use CodeZero\Translator\Models\TranslationKey;
 class DatabaseImporter implements Importer
 {
     /**
+     * Locales that should be imported.
+     *
+     * @var array|null
+     */
+    protected $locales;
+
+    /**
      * Replace existing translations.
      *
      * @var bool
@@ -27,6 +34,22 @@ class DatabaseImporter implements Importer
      * @var bool
      */
     protected $shouldIncludeEmpty = false;
+
+    /**
+     * Set the locales that should be imported.
+     * By default it will import all locales in
+     * the files passed to the import method.
+     *
+     * @param array|null $locales
+     *
+     * @return \CodeZero\Translator\Importer\Importer
+     */
+    public function onlyLocales($locales)
+    {
+        $this->locales = $locales;
+
+        return $this;
+    }
 
     /**
      * Replace existing translations.
@@ -143,6 +166,10 @@ class DatabaseImporter implements Importer
     protected function importTranslation($translationFile, $translationKey, $locale, $translation)
     {
         if ( ! $translation && ! $this->shouldIncludeEmpty) {
+            return;
+        }
+
+        if ($this->locales && ! in_array($locale, $this->locales)) {
             return;
         }
 
