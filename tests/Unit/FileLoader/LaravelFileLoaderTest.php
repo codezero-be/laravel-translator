@@ -117,7 +117,7 @@ class LaravelFileLoaderTest extends FileTestCase
         $this->createTranslationFile('en.json', []);
 
         $loader = new LaravelFileLoader();
-        $loadedFiles = $loader->loadEmpty()->load($this->getLangPath());
+        $loadedFiles = $loader->includeEmpty()->load($this->getLangPath());
 
         $this->assertCount(3, $loadedFiles);
 

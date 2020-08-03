@@ -19,14 +19,14 @@ class DatabaseImporter implements Importer
      *
      * @var bool
      */
-    protected $shouldAddMissing = false;
+    protected $shouldFillMissing = false;
 
     /**
      * Import empty translations.
      *
      * @var bool
      */
-    protected $shouldImportEmpty = false;
+    protected $shouldIncludeEmpty = false;
 
     /**
      * Replace existing translations.
@@ -45,13 +45,13 @@ class DatabaseImporter implements Importer
     /**
      * Add missing translations to existing translation files.
      *
-     * @param bool $add
+     * @param bool $missing
      *
      * @return \CodeZero\Translator\Importer\Importer
      */
-    public function addMissing($add = true)
+    public function fillMissing($missing = true)
     {
-        $this->shouldAddMissing = $add;
+        $this->shouldFillMissing = $missing;
 
         return $this;
     }
@@ -59,13 +59,13 @@ class DatabaseImporter implements Importer
     /**
      * Import empty translations.
      *
-     * @param bool $import
+     * @param bool $empty
      *
      * @return \CodeZero\Translator\Importer\Importer
      */
-    public function importEmpty($import = true)
+    public function includeEmpty($empty = true)
     {
-        $this->shouldImportEmpty = $import;
+        $this->shouldIncludeEmpty = $empty;
 
         return $this;
     }
@@ -98,7 +98,7 @@ class DatabaseImporter implements Importer
             'filename' => $file['filename'],
         ]);
 
-        if ($translationFile->exists && ! $this->shouldAddMissing && ! $this->shouldReplaceExisting) {
+        if ($translationFile->exists && ! $this->shouldFillMissing && ! $this->shouldReplaceExisting) {
             return;
         }
 
@@ -142,13 +142,13 @@ class DatabaseImporter implements Importer
      */
     protected function importTranslation($translationFile, $translationKey, $locale, $translation)
     {
-        if ( ! $translation && ! $this->shouldImportEmpty) {
+        if ( ! $translation && ! $this->shouldIncludeEmpty) {
             return;
         }
 
         $existingTranslation = $translationKey->getTranslation($locale);
 
-        if ( ! $translationFile->wasRecentlyCreated && ! $existingTranslation && ! $this->shouldAddMissing) {
+        if ( ! $translationFile->wasRecentlyCreated && ! $existingTranslation && ! $this->shouldFillMissing) {
             return;
         }
 

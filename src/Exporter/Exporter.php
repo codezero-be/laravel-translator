@@ -12,7 +12,7 @@ interface Exporter
      *
      * @return \CodeZero\Translator\Exporter\Exporter
      */
-    public function exportLocales($locales);
+    public function onlyLocales($locales);
 
     /**
      * Export missing or empty translations.
@@ -21,7 +21,7 @@ interface Exporter
      *
      * @return \CodeZero\Translator\Exporter\Exporter
      */
-    public function exportMissing($missing = true);
+    public function includeMissing($missing = true);
 
     /**
      * Export translation files to the destination directory.

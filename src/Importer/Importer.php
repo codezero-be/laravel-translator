@@ -16,20 +16,20 @@ interface Importer
     /**
      * Add missing translations to existing translation files.
      *
-     * @param bool $add
+     * @param bool $missing
      *
      * @return \CodeZero\Translator\Importer\Importer
      */
-    public function addMissing($add = true);
+    public function fillMissing($missing = true);
 
     /**
      * Import empty translations.
      *
-     * @param bool $import
+     * @param bool $empty
      *
      * @return \CodeZero\Translator\Importer\Importer
      */
-    public function importEmpty($import = true);
+    public function includeEmpty($empty = true);
 
     /**
      * Import translations into the database.

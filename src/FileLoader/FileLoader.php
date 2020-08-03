@@ -7,11 +7,11 @@ interface FileLoader
     /**
      * Load empty translations.
      *
-     * @param bool $load
+     * @param bool $empty
      *
      * @return \CodeZero\Translator\FileLoader\FileLoader
      */
-    public function loadEmpty($load = true);
+    public function includeEmpty($empty = true);
 
     /**
      * Load translations.

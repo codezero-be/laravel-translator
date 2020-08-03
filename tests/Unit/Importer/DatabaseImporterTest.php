@@ -265,7 +265,7 @@ class DatabaseImporterTest extends TestCase
         ];
 
         $importer = new DatabaseImporter();
-        $importer->addMissing()->import($loadedFiles);
+        $importer->fillMissing()->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
         $this->assertCount(1, $translationFiles);
@@ -319,7 +319,7 @@ class DatabaseImporterTest extends TestCase
         ];
 
         $importer = new DatabaseImporter();
-        $importer->importEmpty()->import($loadedFiles);
+        $importer->includeEmpty()->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
         $this->assertCount(1, $translationFiles);

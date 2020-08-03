@@ -211,7 +211,7 @@ class FileExporterTest extends FileTestCase
         ]);
 
         $exporter = new FileExporter();
-        $exporter->exportMissing()->export($translationFiles, $this->getLangPath());
+        $exporter->includeMissing()->export($translationFiles, $this->getLangPath());
 
         $file = $this->getLangPath('en/test-file-a.php');
         $this->assertFileExists($file);
@@ -277,7 +277,7 @@ class FileExporterTest extends FileTestCase
         ]);
 
         $exporter = new FileExporter();
-        $exporter->exportLocales(['en', 'nl'])->export($translationFiles, $this->getLangPath());
+        $exporter->onlyLocales(['en', 'nl'])->export($translationFiles, $this->getLangPath());
 
         $file = $this->getLangPath('en/test-file.php');
         $this->assertFileExists($file);
@@ -309,7 +309,7 @@ class FileExporterTest extends FileTestCase
         ]);
 
         $exporter = new FileExporter();
-        $exporter->exportLocales(['en', 'nl', 'fr'])->exportMissing()->export($translationFiles, $this->getLangPath());
+        $exporter->onlyLocales(['en', 'nl', 'fr'])->includeMissing()->export($translationFiles, $this->getLangPath());
 
         $file = $this->getLangPath('en/test-file.php');
         $this->assertFileExists($file);
