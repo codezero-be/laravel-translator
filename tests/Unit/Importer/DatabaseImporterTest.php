@@ -163,47 +163,6 @@ class DatabaseImporterTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_replace_existing_translations_by_default()
-    {
-        $file = TranslationFile::create([
-            'vendor' => null,
-            'filename' => 'filename',
-        ]);
-
-        TranslationKey::create([
-            'file_id' => $file->id,
-            'key' => 'key',
-            'translations' => [
-                'en' => 'existing translation [en]',
-                'nl' => 'existing translation [nl]',
-            ],
-        ]);
-
-        $loadedFiles = [
-            (new LoadedFile('filename'))
-                ->addTranslation('key', 'en', 'new translation [en]')
-                ->addTranslation('key', 'nl', 'new translation [nl]')
-        ];
-
-        $importer = new DatabaseImporter();
-        $importer->import($loadedFiles);
-
-        $translationFiles = TranslationFile::all();
-        $this->assertCount(1, $translationFiles);
-
-        $translationFile = $translationFiles[0];
-        $this->assertEquals(null, $translationFile->vendor);
-        $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(1, $translationFile->translationKeys);
-
-        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
-        $this->assertEquals([
-            'en' => 'existing translation [en]',
-            'nl' => 'existing translation [nl]',
-        ], $translationFile->translationKeys[0]->translations);
-    }
-
-    /** @test */
     public function it_does_not_add_missing_translations_to_existing_keys_by_default()
     {
         $file = TranslationFile::create([
@@ -243,12 +202,69 @@ class DatabaseImporterTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_import_empty_translations_by_default()
+    public function it_can_add_missing_translations_to_existing_keys()
     {
+        $file = TranslationFile::create([
+            'vendor' => null,
+            'filename' => 'filename',
+        ]);
+
+        TranslationKey::create([
+            'file_id' => $file->id,
+            'key' => 'key',
+            'translations' => [
+                'en' => 'existing translation [en]',
+                'nl' => '',
+            ],
+        ]);
+
         $loadedFiles = [
             (new LoadedFile('filename'))
-                ->addTranslation('key', 'en', 'translation [en]')
-                ->addTranslation('key', 'nl', '')
+                ->addTranslation('key', 'en', 'new translation [en]')
+                ->addTranslation('key', 'nl', 'new translation [nl]')
+                ->addTranslation('key', 'fr', 'new translation [fr]')
+        ];
+
+        $importer = new DatabaseImporter();
+        $importer->fillMissing()->import($loadedFiles);
+
+        $translationFiles = TranslationFile::all();
+        $this->assertCount(1, $translationFiles);
+
+        $translationFile = $translationFiles[0];
+        $this->assertEquals(null, $translationFile->vendor);
+        $this->assertEquals('filename', $translationFile->filename);
+        $this->assertCount(1, $translationFile->translationKeys);
+
+        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals([
+            'en' => 'existing translation [en]',
+            'nl' => 'new translation [nl]',
+            'fr' => 'new translation [fr]',
+        ], $translationFile->translationKeys[0]->translations);
+    }
+
+    /** @test */
+    public function it_does_not_replace_existing_translations_by_default()
+    {
+        $file = TranslationFile::create([
+            'vendor' => null,
+            'filename' => 'filename',
+        ]);
+
+        TranslationKey::create([
+            'file_id' => $file->id,
+            'key' => 'key',
+            'translations' => [
+                'en' => 'existing translation [en]',
+                'nl' => 'existing translation [nl]',
+            ],
+        ]);
+
+        $loadedFiles = [
+            (new LoadedFile('filename'))
+                ->addTranslation('key', 'en', 'new translation [en]')
+                ->addTranslation('key', 'nl', 'new translation [nl]')
         ];
 
         $importer = new DatabaseImporter();
@@ -264,7 +280,8 @@ class DatabaseImporterTest extends TestCase
 
         $this->assertEquals('key', $translationFile->translationKeys[0]->key);
         $this->assertEquals([
-            'en' => 'translation [en]',
+            'en' => 'existing translation [en]',
+            'nl' => 'existing translation [nl]',
         ], $translationFile->translationKeys[0]->translations);
     }
 
@@ -310,31 +327,16 @@ class DatabaseImporterTest extends TestCase
     }
 
     /** @test */
-    public function it_can_add_missing_translations_to_existing_keys()
+    public function it_does_not_import_empty_translations_by_default()
     {
-        $file = TranslationFile::create([
-            'vendor' => null,
-            'filename' => 'filename',
-        ]);
-
-        TranslationKey::create([
-            'file_id' => $file->id,
-            'key' => 'key',
-            'translations' => [
-                'en' => 'existing translation [en]',
-                'nl' => '',
-            ],
-        ]);
-
         $loadedFiles = [
             (new LoadedFile('filename'))
-                ->addTranslation('key', 'en', 'new translation [en]')
-                ->addTranslation('key', 'nl', 'new translation [nl]')
-                ->addTranslation('key', 'fr', 'new translation [fr]')
+                ->addTranslation('key', 'en', 'translation [en]')
+                ->addTranslation('key', 'nl', '')
         ];
 
         $importer = new DatabaseImporter();
-        $importer->fillMissing()->import($loadedFiles);
+        $importer->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
         $this->assertCount(1, $translationFiles);
@@ -346,9 +348,7 @@ class DatabaseImporterTest extends TestCase
 
         $this->assertEquals('key', $translationFile->translationKeys[0]->key);
         $this->assertEquals([
-            'en' => 'existing translation [en]',
-            'nl' => 'new translation [nl]',
-            'fr' => 'new translation [fr]',
+            'en' => 'translation [en]',
         ], $translationFile->translationKeys[0]->translations);
     }
 
