@@ -175,6 +175,7 @@ class DatabaseImporterTest extends TestCase
             'key' => 'key',
             'translations' => [
                 'en' => 'existing translation [en]',
+                'nl' => '',
             ],
         ]);
 
@@ -182,6 +183,7 @@ class DatabaseImporterTest extends TestCase
             (new LoadedFile('filename'))
                 ->addTranslation('key', 'en', 'new translation [en]')
                 ->addTranslation('key', 'nl', 'new translation [nl]')
+                ->addTranslation('key', 'fr', 'new translation [fr]')
         ];
 
         $importer = new DatabaseImporter();
@@ -198,6 +200,7 @@ class DatabaseImporterTest extends TestCase
         $this->assertEquals('key', $translationFile->translationKeys[0]->key);
         $this->assertEquals([
             'en' => 'existing translation [en]',
+            'nl' => '',
         ], $translationFile->translationKeys[0]->translations);
     }
 
@@ -298,7 +301,7 @@ class DatabaseImporterTest extends TestCase
             'key' => 'key',
             'translations' => [
                 'en' => 'existing translation [en]',
-                'nl' => 'existing translation [nl]',
+                'nl' => '',
             ],
         ]);
 
@@ -322,7 +325,7 @@ class DatabaseImporterTest extends TestCase
         $this->assertEquals('key', $translationFile->translationKeys[0]->key);
         $this->assertEquals([
             'en' => 'new translation [en]',
-            'nl' => 'new translation [nl]',
+            'nl' => '',
         ], $translationFile->translationKeys[0]->translations);
     }
 
@@ -390,7 +393,7 @@ class DatabaseImporterTest extends TestCase
         ];
 
         $importer = new DatabaseImporter();
-        $importer->onlyLocales(['en', 'nl'])->import($loadedFiles);
+        $importer->onlyLocales(['en', 'nl', 'de'])->import($loadedFiles);
 
         $translationFiles = TranslationFile::all();
         $this->assertCount(1, $translationFiles);
