@@ -146,7 +146,9 @@ class DatabaseImporter implements Importer
      */
     protected function findOrMakeTranslationKey($translationFile, $key, $translations)
     {
-        $translationKey = TranslationKey::firstOrNew([
+        $action = $translationFile->exists ? 'firstOrNew' : 'make';
+
+        $translationKey = TranslationKey::$action([
             'file_id' => $translationFile->id,
             'key' => $key,
         ]);
