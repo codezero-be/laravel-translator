@@ -120,6 +120,49 @@ class DatabaseImporterTest extends TestCase
     }
 
     /** @test */
+    public function it_adds_new_keys_to_existing_files()
+    {
+        $file = TranslationFile::create([
+            'vendor' => null,
+            'filename' => 'filename',
+        ]);
+
+        TranslationKey::create([
+            'file_id' => $file->id,
+            'key' => 'existing-key',
+            'translations' => [
+                'en' => 'existing translation [en]',
+            ],
+        ]);
+
+        $loadedFiles = [
+            (new LoadedFile('filename'))
+                ->addTranslation('new-key', 'en', 'new translation [en]')
+        ];
+
+        $importer = new DatabaseImporter();
+        $importer->import($loadedFiles);
+
+        $translationFiles = TranslationFile::all();
+        $this->assertCount(1, $translationFiles);
+
+        $translationFile = $translationFiles[0];
+        $this->assertEquals(null, $translationFile->vendor);
+        $this->assertEquals('filename', $translationFile->filename);
+        $this->assertCount(2, $translationFile->translationKeys);
+
+        $this->assertEquals('existing-key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals([
+            'en' => 'existing translation [en]',
+        ], $translationFile->translationKeys[0]->translations);
+
+        $this->assertEquals('new-key', $translationFile->translationKeys[1]->key);
+        $this->assertEquals([
+            'en' => 'new translation [en]',
+        ], $translationFile->translationKeys[1]->translations);
+    }
+
+    /** @test */
     public function it_does_not_replace_existing_translations_by_default()
     {
         $file = TranslationFile::create([

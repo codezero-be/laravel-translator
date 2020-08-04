@@ -22,7 +22,7 @@ class DatabaseImporter implements Importer
     protected $shouldReplaceExisting = false;
 
     /**
-     * Add missing translations to existing translation files.
+     * Add missing translations to existing translation keys.
      *
      * @var bool
      */
@@ -66,7 +66,7 @@ class DatabaseImporter implements Importer
     }
 
     /**
-     * Add missing translations to existing translation files.
+     * Add missing translations to existing translation keys.
      *
      * @param bool $missing
      *
@@ -121,27 +121,30 @@ class DatabaseImporter implements Importer
             'filename' => $file['filename'],
         ]);
 
-        if ($this->shouldRejectTranslationFile($translationFile)) {
+        $translationKeys = [];
+
+        foreach ($file['translations'] as $key => $translations) {
+            $translationKeys[] = $this->findOrMakeTranslationKey($translationFile, $key, $translations);
+        }
+
+        if (count($translationKeys) === 0) {
             return;
         }
 
         $translationFile->save();
-
-        foreach ($file['translations'] as $key => $translations) {
-            $this->importTranslationKey($translationFile, $key, $translations);
-        }
+        $translationFile->translationKeys()->saveMany($translationKeys);
     }
 
     /**
-     * Import translations of the given key and file.
+     * Find or make a TranslationKey and add translations.
      *
      * @param \CodeZero\Translator\Models\TranslationFile $translationFile
      * @param string $key
      * @param array $translations
      *
-     * @return void
+     * @return \CodeZero\Translator\Models\TranslationKey
      */
-    protected function importTranslationKey($translationFile, $key, $translations)
+    protected function findOrMakeTranslationKey($translationFile, $key, $translations)
     {
         $translationKey = TranslationKey::firstOrNew([
             'file_id' => $translationFile->id,
@@ -149,34 +152,28 @@ class DatabaseImporter implements Importer
         ]);
 
         foreach ($translations as $locale => $translation) {
-            $this->importTranslation($translationFile, $translationKey, $locale, $translation);
+            $this->addTranslation($translationKey, $locale, $translation);
         }
+
+        return $translationKey;
     }
 
     /**
-     * Import a translation of the given key and file in a specific locale.
+     * Add a translation to the given key in a specific locale.
      *
-     * @param \CodeZero\Translator\Models\TranslationFile $translationFile
      * @param \CodeZero\Translator\Models\TranslationKey $translationKey
      * @param string $locale
      * @param string $translation
      *
      * @return void
      */
-    protected function importTranslation($translationFile, $translationKey, $locale, $translation)
+    protected function addTranslation($translationKey, $locale, $translation)
     {
-        if ( ! $this->isValidLocale($locale)) {
-            return;
-        }
-
         $existingTranslation = $translationKey->getTranslation($locale);
 
-        if ( ! $this->isValidTranslation($translationFile, $existingTranslation, $translation)) {
-            return;
+        if ($this->isValidLocale($locale) && $this->isValidTranslation($translationKey, $existingTranslation, $translation)) {
+            $translationKey->addTranslation($locale, $translation);
         }
-
-        $translationKey->addTranslation($locale, $translation);
-        $translationKey->save();
     }
 
     /**
@@ -194,29 +191,17 @@ class DatabaseImporter implements Importer
     /**
      * Check if the given translation is eligible for import.
      *
-     * @param \CodeZero\Translator\Models\TranslationFile $translationFile
+     * @param \CodeZero\Translator\Models\TranslationKey $translationKey
      * @param string|null $existingTranslation
      * @param string|null $translation
      *
      * @return bool
      */
-    protected function isValidTranslation($translationFile, $existingTranslation, $translation)
+    protected function isValidTranslation($translationKey, $existingTranslation, $translation)
     {
         return ($translation || $this->shouldIncludeEmpty)
-            && ($translationFile->wasRecentlyCreated
+            && ( ! $translationKey->exists
                 || (($existingTranslation && $this->shouldReplaceExisting)
                     || ( ! $existingTranslation && $this->shouldFillMissing)));
-    }
-
-    /**
-     * Check if the given translation file should be handled at all.
-     *
-     * @param \CodeZero\Translator\Models\TranslationFile $translationFile
-     *
-     * @return bool
-     */
-    protected function shouldRejectTranslationFile($translationFile)
-    {
-        return $translationFile->exists && ! $this->shouldFillMissing && ! $this->shouldReplaceExisting;
     }
 }

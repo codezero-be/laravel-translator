@@ -25,7 +25,7 @@ interface Importer
     public function replaceExisting($replace = true);
 
     /**
-     * Add missing translations to existing translation files.
+     * Add missing translations to existing translation keys.
      *
      * @param bool $missing
      *
