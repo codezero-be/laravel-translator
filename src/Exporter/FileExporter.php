@@ -20,7 +20,7 @@ class FileExporter implements Exporter
      *
      * @var bool
      */
-    protected $shouldIncludeMissing;
+    protected $shouldIncludeEmpty;
 
     /**
      * Set the locales that should be exported.
@@ -40,13 +40,13 @@ class FileExporter implements Exporter
     /**
      * Export missing or empty translations.
      *
-     * @param bool $missing
+     * @param bool $empty
      *
      * @return \CodeZero\Translator\Exporter\Exporter
      */
-    public function includeMissing($missing = true)
+    public function includeEmpty($empty = true)
     {
-        $this->shouldIncludeMissing = $missing;
+        $this->shouldIncludeEmpty = $empty;
 
         return $this;
     }
@@ -87,7 +87,7 @@ class FileExporter implements Exporter
             return $this->locales;
         }
 
-        if ( ! $this->shouldIncludeMissing) {
+        if ( ! $this->shouldIncludeEmpty) {
             return null;
         }
 
@@ -132,7 +132,7 @@ class FileExporter implements Exporter
                 foreach ($locales as $locale) {
                     $translation = $key->translations[$locale] ?? '';
 
-                    if ( ! $translation && ! $this->shouldIncludeMissing) {
+                    if ( ! $translation && ! $this->shouldIncludeEmpty) {
                         continue;
                     }
 

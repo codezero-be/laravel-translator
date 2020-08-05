@@ -149,7 +149,7 @@ class FileExporterTest extends FileTestCase
     }
 
     /** @test */
-    public function it_does_not_export_missing_translations_by_default()
+    public function it_does_not_export_empty_translations_by_default()
     {
         $translationFiles = [
             $translationFile = TranslationFile::make(['vendor' => null, 'filename' => 'test-file']),
@@ -189,7 +189,7 @@ class FileExporterTest extends FileTestCase
     }
 
     /** @test */
-    public function it_can_export_missing_translations()
+    public function it_can_export_empty_translations()
     {
         $translationFiles = [
             $translationFileA = TranslationFile::make(['vendor' => null, 'filename' => 'test-file-a']),
@@ -209,7 +209,7 @@ class FileExporterTest extends FileTestCase
         ]);
 
         $exporter = new FileExporter();
-        $exporter->includeMissing()->export($translationFiles, $this->getLangPath());
+        $exporter->includeEmpty()->export($translationFiles, $this->getLangPath());
 
         $file = $this->getLangPath('en/test-file-a.php');
         $this->assertFileExists($file);
@@ -294,7 +294,7 @@ class FileExporterTest extends FileTestCase
     }
 
     /** @test */
-    public function it_can_export_specific_locales_including_missing_translations()
+    public function it_can_export_specific_locales_including_empty_translations()
     {
         $translationFiles = [
             $translationFile = TranslationFile::make(['vendor' => null, 'filename' => 'test-file']),
@@ -307,7 +307,7 @@ class FileExporterTest extends FileTestCase
         ]);
 
         $exporter = new FileExporter();
-        $exporter->onlyLocales(['en', 'nl', 'fr'])->includeMissing()->export($translationFiles, $this->getLangPath());
+        $exporter->onlyLocales(['en', 'nl', 'fr'])->includeEmpty()->export($translationFiles, $this->getLangPath());
 
         $file = $this->getLangPath('en/test-file.php');
         $this->assertFileExists($file);

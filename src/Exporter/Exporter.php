@@ -17,11 +17,11 @@ interface Exporter
     /**
      * Export missing or empty translations.
      *
-     * @param bool $missing
+     * @param bool $empty
      *
      * @return \CodeZero\Translator\Exporter\Exporter
      */
-    public function includeMissing($missing = true);
+    public function includeEmpty($empty = true);
 
     /**
      * Export translation files to the destination directory.
