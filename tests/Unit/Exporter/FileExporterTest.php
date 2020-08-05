@@ -130,7 +130,7 @@ class FileExporterTest extends FileTestCase
     }
 
     /** @test */
-    public function it_does_not_export_missing_locales_by_default()
+    public function it_does_not_export_missing_translations_by_default()
     {
         $translationFiles = [
             $translationFile = TranslationFile::make(['vendor' => null, 'filename' => 'test-file']),
@@ -139,9 +139,11 @@ class FileExporterTest extends FileTestCase
         $translationFile->setRelation('translationKeys', [
             TranslationKey::make(['key' => 'key-1'])
                 ->addTranslation('en', 'translation 1 [en]')
-                ->addTranslation('nl', 'translation 1 [nl]'),
+                ->addTranslation('nl', 'translation 1 [nl]')
+                ->addTranslation('fr', 'translation 1 [fr]'),
             TranslationKey::make(['key' => 'key-2'])
-                ->addTranslation('en', 'translation 2 [en]'),
+                ->addTranslation('en', 'translation 2 [en]')
+                ->addTranslation('nl', ''),
         ]);
 
         $exporter = new FileExporter();
@@ -159,35 +161,12 @@ class FileExporterTest extends FileTestCase
         $this->assertEquals([
             'key-1' => 'translation 1 [nl]',
         ], include $file);
-    }
 
-    /** @test */
-    public function it_does_not_export_empty_translations_by_default()
-    {
-        $translationFiles = [
-            $translationFile = TranslationFile::make(['vendor' => null, 'filename' => 'test-file']),
-        ];
-
-        $translationFile->setRelation('translationKeys', [
-            TranslationKey::make(['key' => 'key-1'])
-                ->addTranslation('en', 'translation 1 [en]')
-                ->addTranslation('nl', ''),
-            TranslationKey::make(['key' => 'key-2'])
-                ->addTranslation('en', '')
-                ->addTranslation('nl', ''),
-        ]);
-
-        $exporter = new FileExporter();
-        $exporter->export($translationFiles, $this->getLangPath());
-
-        $file = $this->getLangPath('en/test-file.php');
+        $file = $this->getLangPath('fr/test-file.php');
         $this->assertFileExists($file);
         $this->assertEquals([
-            'key-1' => 'translation 1 [en]',
+            'key-1' => 'translation 1 [fr]',
         ], include $file);
-
-        $file = $this->getLangPath('nl/test-file.php');
-        $this->assertFileNotExists($file);
     }
 
     /** @test */
