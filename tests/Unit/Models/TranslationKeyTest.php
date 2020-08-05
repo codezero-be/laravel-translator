@@ -24,6 +24,14 @@ class TranslationKeyTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_an_empty_array_if_there_are_no_translations()
+    {
+        $key = TranslationKey::make();
+
+        $this->assertEquals([], $key->getTranslations());
+    }
+
+    /** @test */
     public function it_gets_a_translation_in_a_specific_locale()
     {
         $key = TranslationKey::make([

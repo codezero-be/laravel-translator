@@ -30,7 +30,7 @@ class TranslationKey extends Model
      */
     public function getTranslations()
     {
-        return $this->translations;
+        return $this->translations ?? [];
     }
 
     /**

@@ -127,6 +127,8 @@ class DatabaseImporter implements Importer
             $translationKeys[] = $this->findOrMakeTranslationKey($translationFile, $key, $translations);
         }
 
+        $translationKeys = array_filter($translationKeys);
+
         if (count($translationKeys) === 0) {
             return;
         }
@@ -157,7 +159,9 @@ class DatabaseImporter implements Importer
             $this->addTranslation($translationKey, $locale, $translation);
         }
 
-        return $translationKey;
+        return count($translationKey->getTranslations()) > 0
+            ? $translationKey
+            : null;
     }
 
     /**
