@@ -130,6 +130,25 @@ class FileExporterTest extends FileTestCase
     }
 
     /** @test */
+    public function it_does_not_export_empty_translation_files_by_default()
+    {
+        $translationFiles = [
+            $translationFile = TranslationFile::make(['vendor' => null, 'filename' => 'test-file']),
+        ];
+
+        $translationFile->setRelation('translationKeys', [
+            TranslationKey::make(['key' => 'key-1'])
+                ->addTranslation('en', ''),
+        ]);
+
+        $exporter = new FileExporter();
+        $exporter->export($translationFiles, $this->getLangPath());
+
+        $file = $this->getLangPath('en/test-file.php');
+        $this->assertFileNotExists($file);
+    }
+
+    /** @test */
     public function it_does_not_export_missing_translations_by_default()
     {
         $translationFiles = [
