@@ -2,35 +2,53 @@
 
 namespace CodeZero\Translator\Controllers;
 
-use CodeZero\Translator\Importer;
+use CodeZero\Translator\FileLoader\FileLoader;
+use CodeZero\Translator\Importer\Importer;
+use CodeZero\Translator\Models\TranslationFile;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class ImportController extends Controller
 {
     /**
-     * Import language files from the filesystem to the database.
+     * Import translation files from the filesystem to the database.
      *
-     * @param \CodeZero\Translator\Importer $importer
+     * @param \Illuminate\Http\Request $request
+     * @param \CodeZero\Translator\FileLoader\FileLoader $loader
+     * @param \CodeZero\Translator\Importer\Importer $importer
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \CodeZero\Translator\Exceptions\PathDoesNotExist
      */
-    public function store(Importer $importer)
+    public function store(Request $request, FileLoader $loader, Importer $importer)
     {
-        return $importer->import();
-    }
+        $request->validate([
+            'replace_existing' => 'nullable|bool',
+            'fill_missing' => 'nullable|bool',
+            'include_empty' => 'nullable|bool',
+        ]);
 
-    /**
-     * Sync the language files with the database translations.
-     *
-     * @param \CodeZero\Translator\Importer $importer
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function update(Importer $importer)
-    {
-        $databaseWins = !! request('database_wins');
+        $fillMissing = $request->get('fill_missing', false);
+        $replaceExisting = $request->get('replace_existing', false);
+        $includeEmpty = $request->get('include_empty', false);
 
-        return $databaseWins
-            ? $importer->databaseWins()->sync()
-            : $importer->sync();
+        $locales = Config::get('translator.locales');
+        $langPath = Config::get('translator.import.path');
+
+        $loadedFiles = $loader
+            ->includeEmpty($includeEmpty)
+            ->onlyLocales($locales)
+            ->load($langPath);
+
+        $importer
+            ->fillMissing($fillMissing)
+            ->replaceExisting($replaceExisting)
+            ->includeEmpty($includeEmpty)
+            ->onlyLocales($locales)
+            ->import($loadedFiles);
+
+        $translationFiles = TranslationFile::with('translationKeys')->get();
+
+        return response()->json($translationFiles);
     }
 }

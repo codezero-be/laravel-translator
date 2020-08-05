@@ -2,6 +2,10 @@
 
 namespace CodeZero\Translator;
 
+use CodeZero\Translator\FileLoader\FileLoader;
+use CodeZero\Translator\FileLoader\LaravelFileLoader;
+use CodeZero\Translator\Importer\DatabaseImporter;
+use CodeZero\Translator\Importer\Importer;
 use CodeZero\Translator\Validators\UniqueTranslationKey;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
@@ -40,7 +44,7 @@ class TranslatorServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfig();
-
+        $this->bindClasses();
     }
 
     /**
@@ -84,5 +88,16 @@ class TranslatorServiceProvider extends ServiceProvider
     protected function mergeConfig()
     {
         $this->mergeConfigFrom(__DIR__."/../config/{$this->name}.php", $this->name);
+    }
+
+    /**
+     * Bind classes in the IoC container.
+     *
+     * @return void
+     */
+    protected function bindClasses()
+    {
+        $this->app->bind(FileLoader::class, LaravelFileLoader::class);
+        $this->app->bind(Importer::class, DatabaseImporter::class);
     }
 }
