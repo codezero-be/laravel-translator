@@ -31,6 +31,7 @@ class ImportController extends Controller
         $fillMissing = $request->get('fill_missing', false);
         $replaceExisting = $request->get('replace_existing', false);
         $includeEmpty = $request->get('include_empty', false);
+        $purgeDatabase = $request->get('purge_database', false);
 
         $locales = Config::get('translator.locales');
         $langPath = Config::get('translator.import.path');
@@ -45,6 +46,7 @@ class ImportController extends Controller
             ->replaceExisting($replaceExisting)
             ->includeEmpty($includeEmpty)
             ->onlyLocales($locales)
+            ->purgeDatabase($purgeDatabase)
             ->import($loadedFiles);
 
         $translationFiles = TranslationFile::with('translationKeys')->get();

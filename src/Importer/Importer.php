@@ -43,6 +43,15 @@ interface Importer
     public function includeEmpty($empty = true);
 
     /**
+     * Purge the database before import.
+     *
+     * @param bool $purge
+     *
+     * @return \CodeZero\Translator\Importer\Importer
+     */
+    public function purgeDatabase($purge = true);
+
+    /**
      * Import translations into the database.
      *
      * @param array $files

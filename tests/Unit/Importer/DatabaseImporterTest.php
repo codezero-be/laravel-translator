@@ -436,4 +436,42 @@ class DatabaseImporterTest extends TestCase
             'nl' => 'translation [nl]',
         ], $translationFile->translationKeys[0]->translations);
     }
+
+    /** @test */
+    public function it_can_purge_the_database_before_import()
+    {
+        $file = TranslationFile::create([
+            'vendor' => null,
+            'filename' => 'filename',
+        ]);
+
+        TranslationKey::create([
+            'file_id' => $file->id,
+            'key' => 'key',
+            'translations' => [
+                'en' => 'existing translation [en]',
+            ],
+        ]);
+
+        $loadedFiles = [
+            (new LoadedFile('filename'))
+                ->addTranslation('key', 'nl', 'new translation [nl]')
+        ];
+
+        $importer = new DatabaseImporter();
+        $importer->purgeDatabase()->import($loadedFiles);
+
+        $translationFiles = TranslationFile::all();
+        $this->assertCount(1, $translationFiles);
+
+        $translationFile = $translationFiles[0];
+        $this->assertEquals(null, $translationFile->vendor);
+        $this->assertEquals('filename', $translationFile->filename);
+        $this->assertCount(1, $translationFile->translationKeys);
+
+        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals([
+            'nl' => 'new translation [nl]',
+        ], $translationFile->translationKeys[0]->translations);
+    }
 }

@@ -4,6 +4,7 @@ namespace CodeZero\Translator\Importer;
 
 use CodeZero\Translator\Models\TranslationFile;
 use CodeZero\Translator\Models\TranslationKey;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseImporter implements Importer
 {
@@ -34,6 +35,13 @@ class DatabaseImporter implements Importer
      * @var bool
      */
     protected $shouldIncludeEmpty = false;
+
+    /**
+     * Purge the database before import.
+     *
+     * @var bool
+     */
+    protected $shouldPurgeDatabase = false;
 
     /**
      * Set the locales that should be imported.
@@ -94,6 +102,20 @@ class DatabaseImporter implements Importer
     }
 
     /**
+     * Purge the database before import.
+     *
+     * @param bool $purge
+     *
+     * @return \CodeZero\Translator\Importer\Importer
+     */
+    public function purgeDatabase($purge = true)
+    {
+        $this->shouldPurgeDatabase = $purge;
+
+        return $this;
+    }
+
+    /**
      * Import translations into the database.
      *
      * @param array $files
@@ -102,9 +124,29 @@ class DatabaseImporter implements Importer
      */
     public function import($files)
     {
+        $this->prepareDatabase();
+
         foreach ($files as $file) {
             $this->importTranslationFile((array) $file);
         }
+    }
+
+    /**
+     * Prepare the database for import.
+     *
+     * @return void
+     */
+    protected function prepareDatabase()
+    {
+        if ( ! $this->shouldPurgeDatabase) {
+            return;
+        }
+
+        $translationFileTable = TranslationFile::make()->getTable();
+        $translationKeyTable = TranslationKey::make()->getTable();
+
+        DB::table($translationKeyTable)->truncate();
+        DB::table($translationFileTable)->truncate();
     }
 
     /**

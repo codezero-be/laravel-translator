@@ -311,4 +311,41 @@ class ImportTranslationsTest extends FileTestCase
         $this->assertEquals('translation [en]', $translationFile->translationKeys[0]->getTranslation('en'));
         $this->assertEquals('translation [nl]', $translationFile->translationKeys[0]->getTranslation('nl'));
     }
+
+    /** @test */
+    public function it_can_purge_the_database_before_import()
+    {
+        $this->withoutExceptionHandling();
+
+        $file = TranslationFile::create(['filename' => 'test-file']);
+
+        TranslationKey::create([
+            'file_id' => $file->id,
+            'key' => 'key',
+            'translations' => [
+                'en' => 'existing translation [en]',
+            ],
+        ]);
+
+        $this->createTranslationFile('nl/test-file.php', [
+            'key' => 'new translation [nl]',
+        ]);
+
+        Config::set('translator.import.path', $this->getLangPath());
+
+        TranslatorRoutes::register();
+
+        $response = $this->actingAsUser()->post(route('translator.import'), [
+            'purge_database' => true,
+        ]);
+        $response->assertSuccessful();
+
+        $translationFiles = $response->original;
+        $this->assertCount(1, $translationFiles);
+
+        $translationFile = $translationFiles->first();
+        $this->assertCount(1, $translationFile->translationKeys);
+        $this->assertCount(1, $translationFile->translationKeys[0]->translations);
+        $this->assertEquals('new translation [nl]', $translationFile->translationKeys[0]->getTranslation('nl'));
+    }
 }
