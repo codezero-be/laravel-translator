@@ -19,9 +19,29 @@ class TranslationKey extends Model
      * @var array
      */
     protected $casts = [
-        'translations' => 'array',
         'is_html' => 'boolean',
+        'translations' => 'array',
     ];
+
+    /**
+     * The model's default attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'is_html' => false,
+        'translations' => '{}',
+    ];
+
+    /**
+     * Check if this key has HTML translations.
+     *
+     * @return bool
+     */
+    public function isHtml()
+    {
+        return $this->is_html;
+    }
 
     /**
      * Get translations.
@@ -30,7 +50,7 @@ class TranslationKey extends Model
      */
     public function getTranslations()
     {
-        return $this->translations ?? [];
+        return $this->translations;
     }
 
     /**
@@ -130,6 +150,6 @@ class TranslationKey extends Model
      */
     public function getAttribute($key)
     {
-        return parent::getAttribute($key) ?: $this->getTranslation($key);
+        return $this->getTranslation($key) ?: parent::getAttribute($key);
     }
 }
