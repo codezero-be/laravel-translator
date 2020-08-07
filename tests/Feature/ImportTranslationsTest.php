@@ -52,15 +52,7 @@ class ImportTranslationsTest extends FileTestCase
     {
         $this->withoutExceptionHandling();
 
-        $file = TranslationFile::create(['filename' => 'existing-file']);
-
-        TranslationKey::create([
-            'file_id' => $file->id,
-            'key' => 'existing-key',
-            'translations' => [
-                'en' => 'existing translation',
-            ],
-        ]);
+        TranslationFile::create(['filename' => 'existing-file']);
 
         $this->createTranslationFile('en/new-file.php', [
             'new-key' => 'new translation',
@@ -77,6 +69,8 @@ class ImportTranslationsTest extends FileTestCase
         $this->assertCount(2, $translationFiles);
         $this->assertEquals('existing-file', $translationFiles->first()->filename);
         $this->assertEquals('new-file', $translationFiles->last()->filename);
+        $this->assertTrue($translationFiles->first()->relationLoaded('translationKeys'));
+        $this->assertTrue($translationFiles->last()->relationLoaded('translationKeys'));
     }
 
     /** @test */
