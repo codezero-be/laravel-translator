@@ -3,83 +3,96 @@
 namespace CodeZero\Translator\Controllers;
 
 use CodeZero\Translator\Models\TranslationFile;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class TranslationFileController extends Controller
 {
     /**
-     * List all TranslationFiles.
+     * List all translation files.
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        return TranslationFile::all();
+        $files = TranslationFile::with('translationKeys')->get();
+
+        return response()->json($files);
     }
 
     /**
-     * Store a new TranslationFile.
+     * Store a new translation file.
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store()
+    public function store(Request $request)
     {
-        $this->validate(request(), [
-            'name' => [
+        $regex = '/^[a-zA-Z0-9\-_]+$/';
+
+        $attributes = $request->validate([
+            'filename' => [
                 'required',
-                'regex:/^[a-zA-Z0-9\-]+$/',
-                Rule::unique('translation_files', 'name')->where(function ($query) {
-                    $query->where('package', '=', request('package'));
+                Rule::unique('translation_files', 'filename')->where(function ($query) use ($request) {
+                    $query->where('vendor', '=', $request->get('vendor'));
                 }),
+                "regex:{$regex}",
             ],
-            'package' => [
+            'vendor' => [
                 'nullable',
-                'regex:/^[a-zA-Z0-9\-]+$/',
+                "regex:{$regex}",
             ],
         ]);
 
-        return TranslationFile::create(
-            array_filter(request()->only(['name', 'package']))
-        );
+        $file = TranslationFile::create($attributes);
+
+        return response()->json($file);
     }
 
     /**
-     * Update the given TranslationFile.
+     * Update the given translation file.
      *
+     * @param \Illuminate\Http\Request $request
      * @param \CodeZero\Translator\Models\TranslationFile $file
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(TranslationFile $file)
+    public function update(Request $request, TranslationFile $file)
     {
-        $this->validate(request(), [
-            'name' => [
+        $regex = '/^[a-zA-Z0-9\-_]+$/';
+
+        $attributes = $request->validate([
+            'filename' => [
                 'required',
-                'regex:/^[a-zA-Z0-9\-]+$/',
-                Rule::unique('translation_files', 'name')->ignore($file->id)->where(function ($query) {
-                    $query->where('package', '=', request('package'));
-                }),
+                Rule::unique('translation_files', 'filename')->where(function ($query) use ($request) {
+                    $query->where('vendor', '=', $request->get('vendor'));
+                })->ignore($file->id),
+                "regex:{$regex}",
             ],
-            'package' => [
+            'vendor' => [
+                'present',
                 'nullable',
-                'regex:/^[a-zA-Z0-9\-]+$/',
+                "regex:{$regex}",
             ],
         ]);
 
-        return tap($file)->update(
-            request()->optional(['name', 'package'])
-        );
+        $file->update($attributes);
+
+        return response()->json($file);
     }
 
     /**
-     * Delete the given TranslationFile.
+     * Delete the given translation file.
      *
      * @param \CodeZero\Translator\Models\TranslationFile $file
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(TranslationFile $file)
     {
-        return tap($file)->delete();
+        $file->delete();
+
+        return response()->json($file);
     }
 }
