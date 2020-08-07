@@ -34,12 +34,12 @@ class ImportController extends Controller
         $purgeDatabase = $request->get('purge_database', false);
 
         $locales = Config::get('translator.locales');
-        $langPath = Config::get('translator.import.path');
+        $importPath = Config::get('translator.import.path');
 
         $loadedFiles = $loader
             ->includeEmpty($includeEmpty)
             ->onlyLocales($locales)
-            ->load($langPath);
+            ->load($importPath);
 
         $importer
             ->fillMissing($fillMissing)
