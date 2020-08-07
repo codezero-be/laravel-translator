@@ -16,6 +16,7 @@ class AuthTest extends TestCase
         TranslatorRoutes::register();
 
         $this->postJson(route('translator.import'))->assertUnauthorized();
+        $this->postJson(route('translator.export'))->assertUnauthorized();
     }
 
     /** @test */
@@ -24,5 +25,6 @@ class AuthTest extends TestCase
         TranslatorRoutes::register();
 
         $this->actingAsUser()->postJson(route('translator.import'))->assertSuccessful();
+        $this->actingAsUser()->postJson(route('translator.export'))->assertSuccessful();
     }
 }

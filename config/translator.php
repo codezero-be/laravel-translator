@@ -9,6 +9,10 @@ return [
         'path' => resource_path('lang'),
     ],
 
+    'export' => [
+        'path' => storage_path('translator/lang'),
+    ],
+
     'route' => [
         'prefix' => 'translator',
         'middleware' => ['web', 'auth'],

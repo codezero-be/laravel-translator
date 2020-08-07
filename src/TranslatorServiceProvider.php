@@ -2,6 +2,8 @@
 
 namespace CodeZero\Translator;
 
+use CodeZero\Translator\Exporter\Exporter;
+use CodeZero\Translator\Exporter\FileExporter;
 use CodeZero\Translator\FileLoader\FileLoader;
 use CodeZero\Translator\FileLoader\LaravelFileLoader;
 use CodeZero\Translator\Importer\DatabaseImporter;
@@ -99,5 +101,6 @@ class TranslatorServiceProvider extends ServiceProvider
     {
         $this->app->bind(FileLoader::class, LaravelFileLoader::class);
         $this->app->bind(Importer::class, DatabaseImporter::class);
+        $this->app->bind(Exporter::class, FileExporter::class);
     }
 }
