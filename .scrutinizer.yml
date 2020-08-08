@@ -2,7 +2,6 @@ filter:
     excluded_paths:
         - "config/"
         - "database/"
-        - "routes/"
         - "tests/"
 checks:
     php:
