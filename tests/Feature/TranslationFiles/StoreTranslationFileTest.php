@@ -137,6 +137,20 @@ class StoreTranslationFileTest extends TestCase
     }
 
     /** @test */
+    public function a_json_file_can_only_exist_without_a_vendor()
+    {
+        TranslatorRoutes::register();
+
+        $response = $this->actingAsUser()->postJson(route('translator.files.store'), [
+            'vendor' => 'vendor-name',
+            'filename' => '_json',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('filename');
+    }
+
+    /** @test */
     public function translation_file_name_may_contain_only_letters_numbers_dashes_and_underscores()
     {
         TranslatorRoutes::register();

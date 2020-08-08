@@ -4,7 +4,9 @@ namespace CodeZero\Translator\Controllers;
 
 use CodeZero\Translator\Models\TranslationFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class TranslationFileController extends Controller
 {
@@ -29,6 +31,8 @@ class TranslationFileController extends Controller
      */
     public function store(Request $request)
     {
+        $this->guardAgainstVendorWithJson($request);
+
         $regex = '/^[a-zA-Z0-9\-_]+$/';
 
         $attributes = $request->validate([
@@ -60,6 +64,8 @@ class TranslationFileController extends Controller
      */
     public function update(Request $request, TranslationFile $file)
     {
+        $this->guardAgainstVendorWithJson($request);
+
         $regex = '/^[a-zA-Z0-9\-_]+$/';
 
         $attributes = $request->validate([
@@ -94,5 +100,22 @@ class TranslationFileController extends Controller
         $file->delete();
 
         return response()->json($file);
+    }
+
+    /**
+     * Prevent a JSON translation file to be created with a vendor.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return void
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function guardAgainstVendorWithJson(Request $request)
+    {
+        if ($request->get('filename') === '_json' && $request->get('vendor')) {
+            throw ValidationException::withMessages([
+                'filename' => Lang::get('JSON files in vendor directories are not supported.')
+            ]);
+        }
     }
 }

@@ -151,6 +151,25 @@ class UpdateTranslationFileTest extends TestCase
     }
 
     /** @test */
+    public function a_json_file_can_only_exist_without_a_vendor()
+    {
+        TranslatorRoutes::register();
+
+        $file = TranslationFile::create([
+            'vendor' => null,
+            'filename' => 'existing-file',
+        ]);
+
+        $response = $this->actingAsUser()->patchJson(route('translator.files.update', [$file]), [
+            'vendor' => 'vendor-name',
+            'filename' => '_json',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('filename');
+    }
+
+    /** @test */
     public function translation_file_name_may_contain_only_letters_numbers_dashes_and_underscores()
     {
         TranslatorRoutes::register();
