@@ -3,6 +3,7 @@
 namespace CodeZero\Translator\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class TranslationKey extends Model
 {
@@ -41,6 +42,16 @@ class TranslationKey extends Model
     public function isHtml()
     {
         return $this->is_html;
+    }
+
+    /**
+     * The TranslationKeys of this TranslationFile.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function translationFile()
+    {
+        return $this->belongsTo(TranslationFile::class, 'file_id');
     }
 
     /**
@@ -83,18 +94,19 @@ class TranslationKey extends Model
     }
 
     /**
-     * Scope a query to include Translations that match the namespace of a given key,
-     * within the file with the given ID,
-     * excluding the Translation with the given ignore ID.
+     * Scope a query to include translation keys that...
+     * - match the namespace of the given key, with the given translation file ID,
+     * - excluding the translation key with the given ignore ID.
      *
      * @param \Illuminate\Database\Query\Builder $query
      * @param string $key
+     * @param bool $isJson
      * @param int $fileId
      * @param int $ignoreId
      *
      * @return \Illuminate\Database\Query\Builder
      */
-    public function scopeUsingNamespace($query, $key, $fileId = 0, $ignoreId = 0)
+    public function scopeUsingNamespace($query, $key, $isJson, $fileId = 0, $ignoreId = 0)
     {
         if ($fileId > 0) {
             $query = $query->where('file_id', $fileId);
@@ -102,6 +114,10 @@ class TranslationKey extends Model
 
         if ($ignoreId > 0) {
             $query = $query->where('id', '!=', $ignoreId);
+        }
+
+        if ($isJson) {
+            return $query->where('key', '=', $key);
         }
 
         $keys = $this->listKeyNamespaces($key);
@@ -131,11 +147,11 @@ class TranslationKey extends Model
     {
         $keyParts = explode('.', $key);
 
-        $namespaces = collect($keyParts)->reduce(function ($namespaces, $keyPart) {
+        $namespaces = Collection::make($keyParts)->reduce(function ($namespaces, $keyPart) {
             return $namespaces->push(
                 trim("{$namespaces->last()}.{$keyPart}", '.')
             );
-        }, collect());
+        }, Collection::make());
 
         return $namespaces->toArray();
     }

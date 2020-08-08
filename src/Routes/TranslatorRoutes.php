@@ -5,7 +5,7 @@ namespace CodeZero\Translator\Routes;
 use CodeZero\Translator\Controllers\ExportController;
 use CodeZero\Translator\Controllers\ImportController;
 use CodeZero\Translator\Controllers\KeepAliveController;
-use CodeZero\Translator\Controllers\TranslationController;
+use CodeZero\Translator\Controllers\TranslationKeyController;
 use CodeZero\Translator\Controllers\TranslationFileController;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
@@ -29,10 +29,10 @@ class TranslatorRoutes
             Route::patch( 'files/{file}', ['as' => 'files.update',  'uses' => TranslationFileController::class.'@update']);
             Route::delete('files/{file}', ['as' => 'files.destroy', 'uses' => TranslationFileController::class.'@destroy']);
 
-            Route::get(   'files/{file}',               ['as' => 'translations.index',   'uses' => TranslationController::class.'@index']);
-            Route::post(  'files/{file}',               ['as' => 'translations.store',   'uses' => TranslationController::class.'@store']);
-            Route::patch( 'translations/{translation}', ['as' => 'translations.update',  'uses' => TranslationController::class.'@update']);
-            Route::delete('translations/{translation}', ['as' => 'translations.destroy', 'uses' => TranslationController::class.'@destroy']);
+            Route::get(   'files/{file}/keys', ['as' => 'keys.index',   'uses' => TranslationKeyController::class.'@index']);
+            Route::post(  'files/{file}/keys', ['as' => 'keys.store',   'uses' => TranslationKeyController::class.'@store']);
+            Route::patch( 'keys/{key}',        ['as' => 'keys.update',  'uses' => TranslationKeyController::class.'@update']);
+            Route::delete('keys/{key}',        ['as' => 'keys.destroy', 'uses' => TranslationKeyController::class.'@destroy']);
 
         });
     }

@@ -28,6 +28,16 @@ class TranslationFile extends Model
     }
 
     /**
+     * Check if this is a JSON translation file.
+     *
+     * @return bool
+     */
+    public function isJson()
+    {
+        return $this->filename === '_json';
+    }
+
+    /**
      * The TranslationKeys of this TranslationFile.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

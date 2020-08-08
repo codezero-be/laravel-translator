@@ -9,7 +9,6 @@ use CodeZero\Translator\FileLoader\LaravelFileLoader;
 use CodeZero\Translator\Importer\DatabaseImporter;
 use CodeZero\Translator\Importer\Importer;
 use CodeZero\Translator\Validators\UniqueTranslationKey;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,13 +28,9 @@ class TranslatorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->registerValidators();
         $this->loadMigrations();
         $this->registerPublishableFiles();
-        $this->registerValidators();
-
-        Request::macro('optional', function ($keys) {
-            return array_intersect_key($this->all(), array_flip($keys));
-        });
     }
 
     /**
@@ -47,6 +42,16 @@ class TranslatorServiceProvider extends ServiceProvider
     {
         $this->mergeConfig();
         $this->bindClasses();
+    }
+
+    /**
+     * Register custom validators.
+     *
+     * @return void
+     */
+    protected function registerValidators()
+    {
+        Validator::extend('unique_translation_key', UniqueTranslationKey::class.'@validate');
     }
 
     /**
@@ -69,16 +74,6 @@ class TranslatorServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__."/../config/{$this->name}.php" => config_path("{$this->name}.php"),
         ], 'config');
-    }
-
-    /**
-     * Register custom validators.
-     *
-     * @return void
-     */
-    protected function registerValidators()
-    {
-        Validator::extend('unique_translation_key', UniqueTranslationKey::class.'@validate');
     }
 
     /**

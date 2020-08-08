@@ -2,7 +2,7 @@
 
 namespace CodeZero\Translator\Validators;
 
-use CodeZero\Translator\Models\Translation;
+use CodeZero\Translator\Models\TranslationKey;
 
 class UniqueTranslationKey
 {
@@ -19,9 +19,10 @@ class UniqueTranslationKey
      * @return bool
      */
     public function validate($attribute, $key, $parameters, $validator) {
-        $fileId = $parameters[0] ?? null;
-        $ignoreId = $parameters[1] ?? null;
+        $isJson = $parameters[0] ?? null;
+        $fileId = $parameters[1] ?? null;
+        $ignoreId = $parameters[2] ?? null;
 
-        return ! Translation::usingNamespace($key, $fileId, $ignoreId)->exists();
+        return ! TranslationKey::usingNamespace($key, $isJson, $fileId, $ignoreId)->exists();
     }
 }
