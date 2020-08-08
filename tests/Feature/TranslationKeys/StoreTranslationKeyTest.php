@@ -8,7 +8,7 @@ use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class CreateTranslationKeyTest extends TestCase
+class StoreTranslationKeyTest extends TestCase
 {
     use RefreshDatabase;
 
