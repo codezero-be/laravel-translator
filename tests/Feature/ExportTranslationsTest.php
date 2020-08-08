@@ -4,7 +4,7 @@ namespace CodeZero\Translator\Tests\Feature;
 
 use CodeZero\Translator\Models\TranslationFile;
 use CodeZero\Translator\Models\TranslationKey;
-use CodeZero\Translator\Routes\TranslatorRoutes;
+use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\FileTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;

@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeZero\Translator\Routes;
+namespace CodeZero\Translator;
 
 use CodeZero\Translator\Controllers\ExportController;
 use CodeZero\Translator\Controllers\ImportController;

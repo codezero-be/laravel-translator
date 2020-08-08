@@ -3,7 +3,7 @@
 namespace CodeZero\Translator\Tests\Feature\TranslationFiles;
 
 use CodeZero\Translator\Models\TranslationFile;
-use CodeZero\Translator\Routes\TranslatorRoutes;
+use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
