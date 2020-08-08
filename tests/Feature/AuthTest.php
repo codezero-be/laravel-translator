@@ -12,6 +12,15 @@ class AuthTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function only_users_can_ping_the_keep_alive_route_by_default()
+    {
+        TranslatorRoutes::register();
+
+        $this->getJson(route('translator.keep.alive'))->assertUnauthorized();
+        $this->actingAsUser()->getJson(route('translator.keep.alive'))->assertSuccessful();
+    }
+
+    /** @test */
     public function only_users_can_import_and_export_translation_files_by_default()
     {
         TranslatorRoutes::register();
