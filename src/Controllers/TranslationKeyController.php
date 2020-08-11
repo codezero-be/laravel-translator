@@ -64,7 +64,7 @@ class TranslationKeyController extends Controller
      */
     public function update(Request $request, TranslationKey $key)
     {
-        $file = $key->translationFile;
+        $file = $key->file;
 
         $rules = [
             'is_html' => ['boolean'],

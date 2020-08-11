@@ -49,7 +49,7 @@ class TranslationKey extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function translationFile()
+    public function file()
     {
         return $this->belongsTo(TranslationFile::class, 'file_id');
     }
