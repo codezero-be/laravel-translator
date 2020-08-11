@@ -4,7 +4,6 @@ namespace CodeZero\Translator\Tests\Feature\TranslationKeys;
 
 use CodeZero\Translator\Models\TranslationKey;
 use CodeZero\Translator\Models\TranslationFile;
-use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,8 +15,6 @@ class UpdateTranslationKeyTest extends TestCase
     public function it_updates_a_translation_key()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $file = TranslationFile::create(['filename' => 'test-file']);
 
@@ -56,8 +53,6 @@ class UpdateTranslationKeyTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $key = TranslationKey::create([
@@ -91,8 +86,6 @@ class UpdateTranslationKeyTest extends TestCase
     public function is_html_can_be_omitted()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $file = TranslationFile::create(['filename' => 'test-file']);
 
@@ -130,8 +123,6 @@ class UpdateTranslationKeyTest extends TestCase
     /** @test */
     public function is_html_should_be_a_boolean()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $key = TranslationKey::create([
@@ -158,8 +149,6 @@ class UpdateTranslationKeyTest extends TestCase
     public function translation_key_can_be_omitted()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $file = TranslationFile::create(['filename' => 'test-file']);
 
@@ -197,8 +186,6 @@ class UpdateTranslationKeyTest extends TestCase
     /** @test */
     public function translation_key_should_not_be_null()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $key = TranslationKey::create([
@@ -218,8 +205,6 @@ class UpdateTranslationKeyTest extends TestCase
     /** @test */
     public function translation_key_should_be_unique_within_the_same_translation_file()
     {
-        TranslatorRoutes::register();
-
         $currentFile = TranslationFile::create(['filename' => 'test-file-a']);
         $otherFile = TranslationFile::create(['filename' => 'test-file-b']);
 
@@ -261,8 +246,6 @@ class UpdateTranslationKeyTest extends TestCase
     /** @test */
     public function translation_key_can_not_be_updated_to_a_namespace_if_it_is_still_in_use()
     {
-        TranslatorRoutes::register();
-
         $currentFile = TranslationFile::create(['filename' => 'test-file']);
 
         $currentKey = TranslationKey::create([
@@ -315,8 +298,6 @@ class UpdateTranslationKeyTest extends TestCase
     /** @test */
     public function translation_key_should_be_unique_within_the_same_json_file()
     {
-        TranslatorRoutes::register();
-
         $currentFile = TranslationFile::create(['filename' => '_json']);
 
         $currentKey = TranslationKey::create([
@@ -352,8 +333,6 @@ class UpdateTranslationKeyTest extends TestCase
     /** @test */
     public function translation_key_may_not_start_or_end_with_a_dot()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $key = TranslationKey::create([
@@ -379,8 +358,6 @@ class UpdateTranslationKeyTest extends TestCase
     /** @test */
     public function translation_key_may_start_or_end_with_a_dot_in_json_files()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => '_json']);
 
         $key = TranslationKey::create([
@@ -397,8 +374,6 @@ class UpdateTranslationKeyTest extends TestCase
     public function translations_can_be_omitted()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $file = TranslationFile::create(['filename' => 'test-file']);
 
@@ -433,8 +408,6 @@ class UpdateTranslationKeyTest extends TestCase
     /** @test */
     public function translations_should_be_an_array()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $key = TranslationKey::create([
@@ -469,8 +442,6 @@ class UpdateTranslationKeyTest extends TestCase
     /** @test */
     public function translation_values_should_be_a_string()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $key = TranslationKey::create([
@@ -497,8 +468,6 @@ class UpdateTranslationKeyTest extends TestCase
     /** @test */
     public function translation_values_can_be_empty()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $key = TranslationKey::create([

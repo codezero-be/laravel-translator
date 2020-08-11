@@ -3,7 +3,6 @@
 namespace CodeZero\Translator\Tests\Feature\TranslationFiles;
 
 use CodeZero\Translator\Models\TranslationFile;
-use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -15,8 +14,6 @@ class UpdateTranslationFileTest extends TestCase
     public function it_updates_a_translation_file()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $file = TranslationFile::create([
             'vendor' => 'existing-vendor',
@@ -40,8 +37,6 @@ class UpdateTranslationFileTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create([
             'vendor' => 'existing-vendor',
             'filename' => 'existing-file',
@@ -63,8 +58,6 @@ class UpdateTranslationFileTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create([
             'vendor' => 'existing-vendor',
             'filename' => 'existing-file',
@@ -85,8 +78,6 @@ class UpdateTranslationFileTest extends TestCase
     /** @test */
     public function translation_vendor_can_not_be_omitted()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create([
             'vendor' => 'existing-vendor',
             'filename' => 'existing-file',
@@ -103,8 +94,6 @@ class UpdateTranslationFileTest extends TestCase
     /** @test */
     public function translation_file_name_is_required()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create([
             'vendor' => 'existing-vendor',
             'filename' => 'existing-file',
@@ -122,8 +111,6 @@ class UpdateTranslationFileTest extends TestCase
     /** @test */
     public function translation_file_name_should_be_unique_with_a_vendor()
     {
-        TranslatorRoutes::register();
-
         $currentFile = TranslationFile::create([
             'vendor' => 'vendor',
             'filename' => 'current-file',
@@ -153,8 +140,6 @@ class UpdateTranslationFileTest extends TestCase
     /** @test */
     public function a_json_file_can_only_exist_without_a_vendor()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create([
             'vendor' => null,
             'filename' => 'existing-file',
@@ -172,8 +157,6 @@ class UpdateTranslationFileTest extends TestCase
     /** @test */
     public function translation_file_name_may_contain_only_letters_numbers_dashes_and_underscores()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create([
             'vendor' => 'vendor',
             'filename' => 'existing-file',
@@ -198,8 +181,6 @@ class UpdateTranslationFileTest extends TestCase
     /** @test */
     public function translation_vendor_may_contain_only_letters_numbers_dashes_and_underscores()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create([
             'vendor' => 'existing-vendor',
             'filename' => 'filename',

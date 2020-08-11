@@ -4,7 +4,6 @@ namespace CodeZero\Translator\Tests\Feature\TranslationKeys;
 
 use CodeZero\Translator\Models\TranslationFile;
 use CodeZero\Translator\Models\TranslationKey;
-use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,8 +16,6 @@ class ListTranslationKeysTest extends TestCase
     public function it_lists_translation_keys_of_a_translation_file()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $fileA = TranslationFile::create(['filename' => 'test-file']);
         $fileB = TranslationFile::create(['filename' => 'test-file']);

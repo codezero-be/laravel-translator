@@ -4,7 +4,6 @@ namespace CodeZero\Translator\Tests\Feature;
 
 use CodeZero\Translator\Models\TranslationFile;
 use CodeZero\Translator\Models\TranslationKey;
-use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\FileTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
@@ -24,8 +23,6 @@ class ImportTranslationsTest extends FileTestCase
         ]);
 
         Config::set('translator.import.path', $this->getLangPath());
-
-        TranslatorRoutes::register();
 
         $this->actingAsUser()->post(route('translator.import'))->assertSuccessful();
 
@@ -60,8 +57,6 @@ class ImportTranslationsTest extends FileTestCase
 
         Config::set('translator.import.path', $this->getLangPath());
 
-        TranslatorRoutes::register();
-
         $response = $this->actingAsUser()->post(route('translator.import'));
         $response->assertSuccessful();
 
@@ -93,8 +88,6 @@ class ImportTranslationsTest extends FileTestCase
         ]);
 
         Config::set('translator.import.path', $this->getLangPath());
-
-        TranslatorRoutes::register();
 
         $response = $this->actingAsUser()->post(route('translator.import'));
         $response->assertSuccessful();
@@ -134,8 +127,6 @@ class ImportTranslationsTest extends FileTestCase
 
         Config::set('translator.import.path', $this->getLangPath());
 
-        TranslatorRoutes::register();
-
         $response = $this->actingAsUser()->post(route('translator.import'), [
             'fill_missing' => true,
         ]);
@@ -173,8 +164,6 @@ class ImportTranslationsTest extends FileTestCase
 
         Config::set('translator.import.path', $this->getLangPath());
 
-        TranslatorRoutes::register();
-
         $response = $this->actingAsUser()->post(route('translator.import'));
         $response->assertSuccessful();
 
@@ -208,8 +197,6 @@ class ImportTranslationsTest extends FileTestCase
 
         Config::set('translator.import.path', $this->getLangPath());
 
-        TranslatorRoutes::register();
-
         $response = $this->actingAsUser()->post(route('translator.import'), [
             'replace_existing' => true,
         ]);
@@ -235,8 +222,6 @@ class ImportTranslationsTest extends FileTestCase
 
         Config::set('translator.import.path', $this->getLangPath());
 
-        TranslatorRoutes::register();
-
         $response = $this->actingAsUser()->post(route('translator.import'));
         $response->assertSuccessful();
 
@@ -254,8 +239,6 @@ class ImportTranslationsTest extends FileTestCase
         ]);
 
         Config::set('translator.import.path', $this->getLangPath());
-
-        TranslatorRoutes::register();
 
         $response = $this->actingAsUser()->post(route('translator.import'), [
             'include_empty' => true,
@@ -289,8 +272,6 @@ class ImportTranslationsTest extends FileTestCase
         ]);
 
         Config::set('translator.import.path', $this->getLangPath());
-
-        TranslatorRoutes::register();
 
         Config::set('translator.locales', ['en', 'nl']);
 
@@ -326,8 +307,6 @@ class ImportTranslationsTest extends FileTestCase
         ]);
 
         Config::set('translator.import.path', $this->getLangPath());
-
-        TranslatorRoutes::register();
 
         $response = $this->actingAsUser()->post(route('translator.import'), [
             'purge_database' => true,

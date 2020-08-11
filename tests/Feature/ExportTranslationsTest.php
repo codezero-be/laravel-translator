@@ -4,7 +4,6 @@ namespace CodeZero\Translator\Tests\Feature;
 
 use CodeZero\Translator\Models\TranslationFile;
 use CodeZero\Translator\Models\TranslationKey;
-use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\FileTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
@@ -30,8 +29,6 @@ class ExportTranslationsTest extends FileTestCase
         ]);
 
         Config::set('translator.export.path', $this->getLangPath());
-
-        TranslatorRoutes::register();
 
         $this->actingAsUser()->post(route('translator.export'))->assertSuccessful();
 
@@ -65,8 +62,6 @@ class ExportTranslationsTest extends FileTestCase
 
         Config::set('translator.export.path', $this->getLangPath());
 
-        TranslatorRoutes::register();
-
         $this->actingAsUser()->post(route('translator.export'))->assertSuccessful();
 
         $file = $this->getLangPath('en/test-file.php');
@@ -89,8 +84,6 @@ class ExportTranslationsTest extends FileTestCase
         ]);
 
         Config::set('translator.export.path', $this->getLangPath());
-
-        TranslatorRoutes::register();
 
         $this->actingAsUser()->post(route('translator.export', [
             'include_empty' => true,
@@ -121,8 +114,6 @@ class ExportTranslationsTest extends FileTestCase
         ]);
 
         Config::set('translator.export.path', $this->getLangPath());
-
-        TranslatorRoutes::register();
 
         Config::set('translator.locales', ['en', 'nl']);
 
@@ -159,8 +150,6 @@ class ExportTranslationsTest extends FileTestCase
         ]);
 
         Config::set('translator.export.path', $this->getLangPath());
-
-        TranslatorRoutes::register();
 
         Config::set('translator.locales', ['en', 'nl']);
 

@@ -4,7 +4,6 @@ namespace CodeZero\Translator\Tests\Feature\TranslationKeys;
 
 use CodeZero\Translator\Models\TranslationFile;
 use CodeZero\Translator\Models\TranslationKey;
-use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,8 +15,6 @@ class DeleteTranslationKeyTest extends TestCase
     public function it_deletes_a_translation_key()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $file = TranslationFile::create([
             'vendor' => null,
@@ -41,8 +38,6 @@ class DeleteTranslationKeyTest extends TestCase
     public function it_returns_the_deleted_translation_key()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $file = TranslationFile::create([
             'vendor' => null,

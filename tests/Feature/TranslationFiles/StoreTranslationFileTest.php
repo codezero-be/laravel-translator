@@ -3,7 +3,6 @@
 namespace CodeZero\Translator\Tests\Feature\TranslationFiles;
 
 use CodeZero\Translator\Models\TranslationFile;
-use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -15,8 +14,6 @@ class StoreTranslationFileTest extends TestCase
     public function it_adds_a_translation_file_to_the_database()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $response = $this->actingAsUser()->postJson(route('translator.files.store'), [
             'vendor' => 'vendor-name',
@@ -35,8 +32,6 @@ class StoreTranslationFileTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        TranslatorRoutes::register();
-
         $response = $this->actingAsUser()->postJson(route('translator.files.store'), [
             'vendor' => 'vendor-name',
             'filename' => 'test-file',
@@ -51,8 +46,6 @@ class StoreTranslationFileTest extends TestCase
     public function translation_vendor_is_optional()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $response = $this->actingAsUser()->postJson(route('translator.files.store'), [
             'vendor' => null,
@@ -72,8 +65,6 @@ class StoreTranslationFileTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        TranslatorRoutes::register();
-
         $response = $this->actingAsUser()->postJson(route('translator.files.store'), [
             'filename' => 'test-file',
         ]);
@@ -89,8 +80,6 @@ class StoreTranslationFileTest extends TestCase
     /** @test */
     public function translation_file_name_is_required()
     {
-        TranslatorRoutes::register();
-
         $response = $this->actingAsUser()->postJson(route('translator.files.store'), [
             'vendor' => 'vendor-name',
             'filename' => '',
@@ -103,8 +92,6 @@ class StoreTranslationFileTest extends TestCase
     /** @test */
     public function translation_file_name_should_be_unique_with_a_vendor()
     {
-        TranslatorRoutes::register();
-
         $existingFile = TranslationFile::create([
             'vendor' => 'existing-vendor',
             'filename' => 'existing-file',
@@ -139,8 +126,6 @@ class StoreTranslationFileTest extends TestCase
     /** @test */
     public function a_json_file_can_only_exist_without_a_vendor()
     {
-        TranslatorRoutes::register();
-
         $response = $this->actingAsUser()->postJson(route('translator.files.store'), [
             'vendor' => 'vendor-name',
             'filename' => '_json',
@@ -153,8 +138,6 @@ class StoreTranslationFileTest extends TestCase
     /** @test */
     public function translation_file_name_may_contain_only_letters_numbers_dashes_and_underscores()
     {
-        TranslatorRoutes::register();
-
         $response = $this->actingAsUser()->postJson(route('translator.files.store'), [
             'vendor' => null,
             'filename' => 'Test_File-1',
@@ -174,8 +157,6 @@ class StoreTranslationFileTest extends TestCase
     /** @test */
     public function translation_vendor_may_contain_only_letters_numbers_dashes_and_underscores()
     {
-        TranslatorRoutes::register();
-
         $response = $this->actingAsUser()->postJson(route('translator.files.store'), [
             'vendor' => 'Vendor_Name-1',
             'filename' => 'test-file',

@@ -3,7 +3,6 @@
 namespace CodeZero\Translator\Tests\Feature\TranslationFiles;
 
 use CodeZero\Translator\Models\TranslationFile;
-use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,8 +15,6 @@ class ListTranslationFilesTest extends TestCase
     public function it_lists_translation_files()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $first = TranslationFile::create(['filename' => 'first']);
         $second = TranslationFile::create(['filename' => 'second']);

@@ -4,7 +4,6 @@ namespace CodeZero\Translator\Tests\Feature\TranslationFiles;
 
 use CodeZero\Translator\Models\TranslationKey;
 use CodeZero\Translator\Models\TranslationFile;
-use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,8 +15,6 @@ class DeleteTranslationFileTest extends TestCase
     public function it_deletes_a_translation_file_and_all_its_translations()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $file = TranslationFile::create([
             'vendor' => null,
@@ -43,8 +40,6 @@ class DeleteTranslationFileTest extends TestCase
     public function it_returns_the_deleted_translation_file()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $file = TranslationFile::create([
             'vendor' => 'vendor-name',

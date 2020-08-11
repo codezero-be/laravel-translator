@@ -28,6 +28,7 @@ class TranslatorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadRoutes();
         $this->registerValidators();
         $this->loadMigrations();
         $this->registerPublishableFiles();
@@ -42,6 +43,16 @@ class TranslatorServiceProvider extends ServiceProvider
     {
         $this->mergeConfig();
         $this->bindClasses();
+    }
+
+    /**
+    * Load package routes.
+    *
+    * @return void
+    */
+    protected function loadRoutes()
+    {
+        $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
     }
 
     /**

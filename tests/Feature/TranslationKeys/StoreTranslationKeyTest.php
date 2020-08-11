@@ -4,7 +4,6 @@ namespace CodeZero\Translator\Tests\Feature\TranslationKeys;
 
 use CodeZero\Translator\Models\TranslationKey;
 use CodeZero\Translator\Models\TranslationFile;
-use CodeZero\Translator\TranslatorRoutes;
 use CodeZero\Translator\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,8 +15,6 @@ class StoreTranslationKeyTest extends TestCase
     public function it_adds_a_translation_key_to_a_translation_file()
     {
         $this->withoutExceptionHandling();
-
-        TranslatorRoutes::register();
 
         $file = TranslationFile::create(['filename' => 'test-file']);
 
@@ -45,8 +42,6 @@ class StoreTranslationKeyTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $response = $this->actingAsUser()->postJson(route('translator.keys.store', [$file]), [
@@ -70,8 +65,6 @@ class StoreTranslationKeyTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $response = $this->actingAsUser()->postJson(route('translator.keys.store', [$file]), [
@@ -88,8 +81,6 @@ class StoreTranslationKeyTest extends TestCase
     /** @test */
     public function is_html_should_be_a_boolean()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $response = $this->actingAsUser()->postJson(route('translator.keys.store', [$file]), [
@@ -112,8 +103,6 @@ class StoreTranslationKeyTest extends TestCase
     /** @test */
     public function translation_key_is_required()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $response = $this->actingAsUser()->postJson(route('translator.keys.store', [$file]), [
@@ -127,8 +116,6 @@ class StoreTranslationKeyTest extends TestCase
     /** @test */
     public function translation_key_should_be_unique_within_the_same_translation_file()
     {
-        TranslatorRoutes::register();
-
         $fileA = TranslationFile::create(['filename' => 'test-file-a']);
         $fileB = TranslationFile::create(['filename' => 'test-file-b']);
 
@@ -177,8 +164,6 @@ class StoreTranslationKeyTest extends TestCase
     /** @test */
     public function translation_key_should_be_unique_within_the_same_json_file()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => '_json']);
 
         TranslationKey::create([
@@ -205,8 +190,6 @@ class StoreTranslationKeyTest extends TestCase
     /** @test */
     public function translation_key_may_not_start_or_end_with_a_dot()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $response = $this->actingAsUser()->postJson(route('translator.keys.store', [$file]), [
@@ -227,8 +210,6 @@ class StoreTranslationKeyTest extends TestCase
     /** @test */
     public function translation_key_may_start_or_end_with_a_dot_in_json_files()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => '_json']);
 
         $this->actingAsUser()->postJson(route('translator.keys.store', [$file]), [
@@ -239,8 +220,6 @@ class StoreTranslationKeyTest extends TestCase
     /** @test */
     public function translations_can_be_omitted()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $this->actingAsUser()->postJson(route('translator.keys.store', [$file]), [
@@ -255,8 +234,6 @@ class StoreTranslationKeyTest extends TestCase
     /** @test */
     public function translations_should_be_an_array()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $response = $this->actingAsUser()->postJson(route('translator.keys.store', [$file]), [
@@ -279,8 +256,6 @@ class StoreTranslationKeyTest extends TestCase
     /** @test */
     public function translation_values_should_be_a_string()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $response = $this->actingAsUser()->postJson(route('translator.keys.store', [$file]), [
@@ -299,8 +274,6 @@ class StoreTranslationKeyTest extends TestCase
     /** @test */
     public function translation_values_can_be_empty()
     {
-        TranslatorRoutes::register();
-
         $file = TranslationFile::create(['filename' => 'test-file']);
 
         $this->actingAsUser()->postJson(route('translator.keys.store', [$file]), [
