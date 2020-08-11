@@ -49,7 +49,7 @@ class ImportController extends Controller
             ->purgeDatabase($purgeDatabase)
             ->import($loadedFiles);
 
-        $translationFiles = TranslationFile::with('translationKeys')->get();
+        $translationFiles = TranslationFile::with('keys')->get();
 
         return response()->json($translationFiles);
     }

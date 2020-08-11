@@ -27,7 +27,7 @@ class ExportController extends Controller
 
         $locales = Config::get('translator.locales');
         $exportPath = Config::get('translator.export.path');
-        $files = TranslationFile::with('translationKeys')->get();
+        $files = TranslationFile::with('keys')->get();
 
         $exporter
             ->includeEmpty($includeEmpty)

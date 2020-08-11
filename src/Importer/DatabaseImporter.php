@@ -176,7 +176,7 @@ class DatabaseImporter implements Importer
         }
 
         $translationFile->save();
-        $translationFile->translationKeys()->saveMany($translationKeys);
+        $translationFile->keys()->saveMany($translationKeys);
     }
 
     /**

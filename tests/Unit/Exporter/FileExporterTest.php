@@ -18,7 +18,7 @@ class FileExporterTest extends FileTestCase
             $translationFileB = TranslationFile::make(['vendor' => null, 'filename' => 'test-file-b']),
         ];
 
-        $translationFileA->setRelation('translationKeys', [
+        $translationFileA->setRelation('keys', [
             TranslationKey::make(['key' => 'key-a-1'])
                 ->addTranslation('en', 'translation a-1 [en]')
                 ->addTranslation('nl', 'translation a-1 [nl]'),
@@ -27,7 +27,7 @@ class FileExporterTest extends FileTestCase
                 ->addTranslation('nl', 'translation a-2 [nl]'),
         ]);
 
-        $translationFileB->setRelation('translationKeys', [
+        $translationFileB->setRelation('keys', [
             TranslationKey::make(['key' => 'some.nested.key-b'])
                 ->addTranslation('en', 'nested translation b [en]')
                 ->addTranslation('nl', 'nested translation b [nl]'),
@@ -78,7 +78,7 @@ class FileExporterTest extends FileTestCase
             $translationFile = TranslationFile::make(['vendor' => 'vendor-name', 'filename' => 'test-file']),
         ];
 
-        $translationFile->setRelation('translationKeys', [
+        $translationFile->setRelation('keys', [
             TranslationKey::make(['key' => 'key'])
                 ->addTranslation('en', 'translation [en]')
                 ->addTranslation('nl', 'translation [nl]')
@@ -107,7 +107,7 @@ class FileExporterTest extends FileTestCase
             $translationFile = TranslationFile::make(['vendor' => null, 'filename' => '_json']),
         ];
 
-        $translationFile->setRelation('translationKeys', [
+        $translationFile->setRelation('keys', [
             TranslationKey::make(['key' => 'some.key'])
                 ->addTranslation('en', 'translation [en]')
                 ->addTranslation('nl', 'translation [nl]')
@@ -136,7 +136,7 @@ class FileExporterTest extends FileTestCase
             $translationFile = TranslationFile::make(['vendor' => null, 'filename' => 'test-file']),
         ];
 
-        $translationFile->setRelation('translationKeys', [
+        $translationFile->setRelation('keys', [
             TranslationKey::make(['key' => 'key-1'])
                 ->addTranslation('en', ''),
         ]);
@@ -155,7 +155,7 @@ class FileExporterTest extends FileTestCase
             $translationFile = TranslationFile::make(['vendor' => null, 'filename' => 'test-file']),
         ];
 
-        $translationFile->setRelation('translationKeys', [
+        $translationFile->setRelation('keys', [
             TranslationKey::make(['key' => 'key-1'])
                 ->addTranslation('en', 'translation 1 [en]')
                 ->addTranslation('nl', 'translation 1 [nl]')
@@ -196,13 +196,13 @@ class FileExporterTest extends FileTestCase
             $translationFileB = TranslationFile::make(['vendor' => null, 'filename' => 'test-file-b']),
         ];
 
-        $translationFileA->setRelation('translationKeys', [
+        $translationFileA->setRelation('keys', [
             TranslationKey::make(['key' => 'key-a'])
                 ->addTranslation('en', 'translation a [en]')
                 ->addTranslation('nl', ''),
         ]);
 
-        $translationFileB->setRelation('translationKeys', [
+        $translationFileB->setRelation('keys', [
             TranslationKey::make(['key' => 'key-b'])
                 ->addTranslation('fr', 'translation b [fr]')
                 ->addTranslation('de', ''),
@@ -267,7 +267,7 @@ class FileExporterTest extends FileTestCase
             $translationFile = TranslationFile::make(['vendor' => null, 'filename' => 'test-file']),
         ];
 
-        $translationFile->setRelation('translationKeys', [
+        $translationFile->setRelation('keys', [
             TranslationKey::make(['key' => 'key'])
                 ->addTranslation('en', 'translation [en]')
                 ->addTranslation('nl', 'translation [nl]')
@@ -300,7 +300,7 @@ class FileExporterTest extends FileTestCase
             $translationFile = TranslationFile::make(['vendor' => null, 'filename' => 'test-file']),
         ];
 
-        $translationFile->setRelation('translationKeys', [
+        $translationFile->setRelation('keys', [
             TranslationKey::make(['key' => 'key'])
                 ->addTranslation('en', 'translation [en]')
                 ->addTranslation('nl', ''),
@@ -354,8 +354,8 @@ class FileExporterTest extends FileTestCase
 
         $key = TranslationKey::make(['key' => 'key'])->addTranslation('en', 'translation [en]');
 
-        $translationFilePHP->setRelation('translationKeys', [$key]);
-        $translationFileJSON->setRelation('translationKeys', [$key]);
+        $translationFilePHP->setRelation('keys', [$key]);
+        $translationFileJSON->setRelation('keys', [$key]);
 
         $exporter = new FileExporter();
         $exporter->export($translationFiles, $this->getLangPath());

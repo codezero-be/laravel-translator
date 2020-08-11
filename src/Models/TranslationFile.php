@@ -42,7 +42,7 @@ class TranslationFile extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function translationKeys()
+    public function keys()
     {
         return $this->hasMany(TranslationKey::class, 'file_id');
     }
@@ -54,7 +54,7 @@ class TranslationFile extends Model
      */
     public function getTranslationKeys()
     {
-        return $this->translationKeys;
+        return $this->keys;
     }
 
     /**

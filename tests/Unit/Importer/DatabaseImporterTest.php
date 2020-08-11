@@ -33,19 +33,19 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals('vendor-name', $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(2, $translationFile->translationKeys);
+        $this->assertCount(2, $translationFile->keys);
 
-        $this->assertEquals('key-a', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key-a', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'translation a [en]',
             'nl' => 'translation a [nl]',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
 
-        $this->assertEquals('key-b', $translationFile->translationKeys[1]->key);
+        $this->assertEquals('key-b', $translationFile->keys[1]->key);
         $this->assertEquals([
             'en' => 'translation b [en]',
             'nl' => 'translation b [nl]',
-        ], $translationFile->translationKeys[1]->translations);
+        ], $translationFile->keys[1]->translations);
     }
 
     /** @test */
@@ -77,19 +77,19 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals('vendor-name', $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(2, $translationFile->translationKeys);
+        $this->assertCount(2, $translationFile->keys);
 
-        $this->assertEquals('key-a', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key-a', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'translation a [en]',
             'nl' => 'translation a [nl]',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
 
-        $this->assertEquals('key-b', $translationFile->translationKeys[1]->key);
+        $this->assertEquals('key-b', $translationFile->keys[1]->key);
         $this->assertEquals([
             'en' => 'translation b [en]',
             'nl' => 'translation b [nl]',
-        ], $translationFile->translationKeys[1]->translations);
+        ], $translationFile->keys[1]->translations);
     }
 
     /** @test */
@@ -110,13 +110,13 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals(null, $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(1, $translationFile->translationKeys);
+        $this->assertCount(1, $translationFile->keys);
 
-        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'translation [en]',
             'nl' => 'translation [nl]',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
     }
 
     /** @test */
@@ -149,17 +149,17 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals(null, $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(2, $translationFile->translationKeys);
+        $this->assertCount(2, $translationFile->keys);
 
-        $this->assertEquals('existing-key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('existing-key', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'existing translation [en]',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
 
-        $this->assertEquals('new-key', $translationFile->translationKeys[1]->key);
+        $this->assertEquals('new-key', $translationFile->keys[1]->key);
         $this->assertEquals([
             'en' => 'new translation [en]',
-        ], $translationFile->translationKeys[1]->translations);
+        ], $translationFile->keys[1]->translations);
     }
 
     /** @test */
@@ -195,13 +195,13 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals(null, $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(1, $translationFile->translationKeys);
+        $this->assertCount(1, $translationFile->keys);
 
-        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'existing translation [en]',
             'nl' => '',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
     }
 
     /** @test */
@@ -237,14 +237,14 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals(null, $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(1, $translationFile->translationKeys);
+        $this->assertCount(1, $translationFile->keys);
 
-        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'existing translation [en]',
             'nl' => 'new translation [nl]',
             'fr' => 'new translation [fr]',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
     }
 
     /** @test */
@@ -279,13 +279,13 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals(null, $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(1, $translationFile->translationKeys);
+        $this->assertCount(1, $translationFile->keys);
 
-        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'existing translation [en]',
             'nl' => 'existing translation [nl]',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
     }
 
     /** @test */
@@ -320,13 +320,13 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals(null, $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(1, $translationFile->translationKeys);
+        $this->assertCount(1, $translationFile->keys);
 
-        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'new translation [en]',
             'nl' => '',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
     }
 
     /** @test */
@@ -347,12 +347,12 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals(null, $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(1, $translationFile->translationKeys);
+        $this->assertCount(1, $translationFile->keys);
 
-        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'translation [en]',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
     }
 
     /** @test */
@@ -374,12 +374,12 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals(null, $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(1, $translationFile->translationKeys);
+        $this->assertCount(1, $translationFile->keys);
 
-        $this->assertEquals('key-with-translation', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key-with-translation', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'translation [en]',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
     }
 
     /** @test */
@@ -400,13 +400,13 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals(null, $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(1, $translationFile->translationKeys);
+        $this->assertCount(1, $translationFile->keys);
 
-        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'translation [en]',
             'nl' => '',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
     }
 
     /** @test */
@@ -428,13 +428,13 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals(null, $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(1, $translationFile->translationKeys);
+        $this->assertCount(1, $translationFile->keys);
 
-        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key', $translationFile->keys[0]->key);
         $this->assertEquals([
             'en' => 'translation [en]',
             'nl' => 'translation [nl]',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
     }
 
     /** @test */
@@ -467,11 +467,11 @@ class DatabaseImporterTest extends TestCase
         $translationFile = $translationFiles[0];
         $this->assertEquals(null, $translationFile->vendor);
         $this->assertEquals('filename', $translationFile->filename);
-        $this->assertCount(1, $translationFile->translationKeys);
+        $this->assertCount(1, $translationFile->keys);
 
-        $this->assertEquals('key', $translationFile->translationKeys[0]->key);
+        $this->assertEquals('key', $translationFile->keys[0]->key);
         $this->assertEquals([
             'nl' => 'new translation [nl]',
-        ], $translationFile->translationKeys[0]->translations);
+        ], $translationFile->keys[0]->translations);
     }
 }

@@ -38,7 +38,7 @@ class UpdateTranslationKeyTest extends TestCase
 
         $response->assertSuccessful();
 
-        $keys = $file->translationKeys()->get();
+        $keys = $file->keys()->get();
         $this->assertCount(1, $keys);
         $this->assertTrue($keys->first()->is($key));
         $this->assertTrue($keys->first()->isHtml());
@@ -109,7 +109,7 @@ class UpdateTranslationKeyTest extends TestCase
 
         $response->assertSuccessful();
 
-        $keys = $file->translationKeys()->get();
+        $keys = $file->keys()->get();
         $this->assertCount(1, $keys);
         $this->assertTrue($keys->first()->is($key));
         $this->assertTrue($keys->first()->isHtml());
@@ -172,7 +172,7 @@ class UpdateTranslationKeyTest extends TestCase
 
         $response->assertSuccessful();
 
-        $keys = $file->translationKeys()->get();
+        $keys = $file->keys()->get();
         $this->assertCount(1, $keys);
         $this->assertTrue($keys->first()->is($key));
         $this->assertTrue($keys->first()->isHtml());
@@ -394,7 +394,7 @@ class UpdateTranslationKeyTest extends TestCase
 
         $response->assertSuccessful();
 
-        $keys = $file->translationKeys()->get();
+        $keys = $file->keys()->get();
         $this->assertCount(1, $keys);
         $this->assertTrue($keys->first()->is($key));
         $this->assertTrue($keys->first()->isHtml());

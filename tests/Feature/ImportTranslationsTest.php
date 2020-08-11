@@ -31,14 +31,14 @@ class ImportTranslationsTest extends FileTestCase
 
         $translationFile = $translationFiles->first();
         $this->assertEquals('test-file', $translationFile->filename);
-        $this->assertCount(2, $translationFile->translationKeys);
+        $this->assertCount(2, $translationFile->keys);
 
-        $translationKey = $translationFile->translationKeys[0];
+        $translationKey = $translationFile->keys[0];
         $this->assertEquals('key-1', $translationKey->key);
         $this->assertCount(1, $translationKey->translations);
         $this->assertEquals('translation 1', $translationKey->getTranslation('en'));
 
-        $translationKey = $translationFile->translationKeys[1];
+        $translationKey = $translationFile->keys[1];
         $this->assertEquals('key-2', $translationKey->key);
         $this->assertCount(1, $translationKey->translations);
         $this->assertEquals('translation 2', $translationKey->getTranslation('en'));
@@ -64,8 +64,8 @@ class ImportTranslationsTest extends FileTestCase
         $this->assertCount(2, $translationFiles);
         $this->assertEquals('existing-file', $translationFiles->first()->filename);
         $this->assertEquals('new-file', $translationFiles->last()->filename);
-        $this->assertTrue($translationFiles->first()->relationLoaded('translationKeys'));
-        $this->assertTrue($translationFiles->last()->relationLoaded('translationKeys'));
+        $this->assertTrue($translationFiles->first()->relationLoaded('keys'));
+        $this->assertTrue($translationFiles->last()->relationLoaded('keys'));
     }
 
     /** @test */
@@ -96,9 +96,9 @@ class ImportTranslationsTest extends FileTestCase
         $this->assertCount(1, $translationFiles);
 
         $translationFile = $translationFiles->first();
-        $this->assertCount(1, $translationFile->translationKeys);
-        $this->assertCount(1, $translationFile->translationKeys[0]->translations);
-        $this->assertEquals('existing translation [en]', $translationFile->translationKeys[0]->getTranslation('en'));
+        $this->assertCount(1, $translationFile->keys);
+        $this->assertCount(1, $translationFile->keys[0]->translations);
+        $this->assertEquals('existing translation [en]', $translationFile->keys[0]->getTranslation('en'));
     }
 
     /** @test */
@@ -136,11 +136,11 @@ class ImportTranslationsTest extends FileTestCase
         $this->assertCount(1, $translationFiles);
 
         $translationFile = $translationFiles->first();
-        $this->assertCount(1, $translationFile->translationKeys);
-        $this->assertCount(3, $translationFile->translationKeys[0]->translations);
-        $this->assertEquals('existing translation [en]', $translationFile->translationKeys[0]->getTranslation('en'));
-        $this->assertEquals('new translation [nl]', $translationFile->translationKeys[0]->getTranslation('nl'));
-        $this->assertEquals('new translation [fr]', $translationFile->translationKeys[0]->getTranslation('fr'));
+        $this->assertCount(1, $translationFile->keys);
+        $this->assertCount(3, $translationFile->keys[0]->translations);
+        $this->assertEquals('existing translation [en]', $translationFile->keys[0]->getTranslation('en'));
+        $this->assertEquals('new translation [nl]', $translationFile->keys[0]->getTranslation('nl'));
+        $this->assertEquals('new translation [fr]', $translationFile->keys[0]->getTranslation('fr'));
     }
 
     /** @test */
@@ -171,9 +171,9 @@ class ImportTranslationsTest extends FileTestCase
         $this->assertCount(1, $translationFiles);
 
         $translationFile = $translationFiles->first();
-        $this->assertCount(1, $translationFile->translationKeys);
-        $this->assertCount(1, $translationFile->translationKeys[0]->translations);
-        $this->assertEquals('existing translation', $translationFile->translationKeys[0]->getTranslation('en'));
+        $this->assertCount(1, $translationFile->keys);
+        $this->assertCount(1, $translationFile->keys[0]->translations);
+        $this->assertEquals('existing translation', $translationFile->keys[0]->getTranslation('en'));
     }
 
     /** @test */
@@ -206,9 +206,9 @@ class ImportTranslationsTest extends FileTestCase
         $this->assertCount(1, $translationFiles);
 
         $translationFile = $translationFiles->first();
-        $this->assertCount(1, $translationFile->translationKeys);
-        $this->assertCount(1, $translationFile->translationKeys[0]->translations);
-        $this->assertEquals('new translation', $translationFile->translationKeys[0]->getTranslation('en'));
+        $this->assertCount(1, $translationFile->keys);
+        $this->assertCount(1, $translationFile->keys[0]->translations);
+        $this->assertEquals('new translation', $translationFile->keys[0]->getTranslation('en'));
     }
 
     /** @test */
@@ -249,9 +249,9 @@ class ImportTranslationsTest extends FileTestCase
         $this->assertCount(1, $translationFiles);
 
         $translationFile = $translationFiles->first();
-        $this->assertCount(1, $translationFile->translationKeys);
-        $this->assertCount(1, $translationFile->translationKeys[0]->translations);
-        $this->assertEquals('', $translationFile->translationKeys[0]->getTranslation('en'));
+        $this->assertCount(1, $translationFile->keys);
+        $this->assertCount(1, $translationFile->keys[0]->translations);
+        $this->assertEquals('', $translationFile->keys[0]->getTranslation('en'));
     }
 
     /** @test */
@@ -281,10 +281,10 @@ class ImportTranslationsTest extends FileTestCase
         $this->assertCount(1, $translationFiles);
 
         $translationFile = $translationFiles->first();
-        $this->assertCount(1, $translationFile->translationKeys);
-        $this->assertCount(2, $translationFile->translationKeys[0]->translations);
-        $this->assertEquals('translation [en]', $translationFile->translationKeys[0]->getTranslation('en'));
-        $this->assertEquals('translation [nl]', $translationFile->translationKeys[0]->getTranslation('nl'));
+        $this->assertCount(1, $translationFile->keys);
+        $this->assertCount(2, $translationFile->keys[0]->translations);
+        $this->assertEquals('translation [en]', $translationFile->keys[0]->getTranslation('en'));
+        $this->assertEquals('translation [nl]', $translationFile->keys[0]->getTranslation('nl'));
     }
 
     /** @test */
@@ -317,8 +317,8 @@ class ImportTranslationsTest extends FileTestCase
         $this->assertCount(1, $translationFiles);
 
         $translationFile = $translationFiles->first();
-        $this->assertCount(1, $translationFile->translationKeys);
-        $this->assertCount(1, $translationFile->translationKeys[0]->translations);
-        $this->assertEquals('new translation [nl]', $translationFile->translationKeys[0]->getTranslation('nl'));
+        $this->assertCount(1, $translationFile->keys);
+        $this->assertCount(1, $translationFile->keys[0]->translations);
+        $this->assertEquals('new translation [nl]', $translationFile->keys[0]->getTranslation('nl'));
     }
 }

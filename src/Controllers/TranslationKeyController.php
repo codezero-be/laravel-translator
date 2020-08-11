@@ -49,7 +49,7 @@ class TranslationKeyController extends Controller
 
         $attributes = $request->validate($rules);
 
-        $key = $file->translationKeys()->create($attributes);
+        $key = $file->keys()->create($attributes);
 
         return response()->json($key);
     }

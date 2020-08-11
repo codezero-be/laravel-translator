@@ -94,7 +94,7 @@ class FileExporter implements Exporter
         $locales = [];
 
         foreach ($translationFiles as $file) {
-            foreach ($file->translationKeys as $key) {
+            foreach ($file->keys as $key) {
                 $locales = array_merge($locales, array_keys($key->translations));
             }
         }
@@ -126,7 +126,7 @@ class FileExporter implements Exporter
         $translations = [];
 
         foreach ($translationFiles as $file) {
-            foreach ($file->translationKeys as $key) {
+            foreach ($file->keys as $key) {
                 $locales = $explicitLocales ?: array_keys($key->translations);
 
                 foreach ($locales as $locale) {

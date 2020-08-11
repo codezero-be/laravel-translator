@@ -28,7 +28,7 @@ class StoreTranslationKeyTest extends TestCase
 
         $response->assertSuccessful();
 
-        $keys = $file->translationKeys()->get();
+        $keys = $file->keys()->get();
         $this->assertCount(1, $keys);
         $this->assertTrue($keys->first()->isHtml());
         $this->assertEquals('some.key', $keys->first()->key);
@@ -73,7 +73,7 @@ class StoreTranslationKeyTest extends TestCase
 
         $response->assertSuccessful();
 
-        $keys = $file->translationKeys()->get();
+        $keys = $file->keys()->get();
         $this->assertCount(1, $keys);
         $this->assertFalse($keys->first()->isHtml());
     }
@@ -226,7 +226,7 @@ class StoreTranslationKeyTest extends TestCase
             'key' => 'some.key',
         ])->assertSuccessful();
 
-        $keys = $file->translationKeys()->get();
+        $keys = $file->keys()->get();
         $this->assertCount(1, $keys);
         $this->assertEquals([], $keys->first()->translations);
     }

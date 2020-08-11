@@ -13,7 +13,7 @@ class TranslationFileTest extends TestCase
     public function it_gets_translation_keys_of_a_file()
     {
         $translationFile = TranslationFile::make();
-        $translationFile->setRelation('translationKeys', Collection::make([
+        $translationFile->setRelation('keys', Collection::make([
             $keyA = TranslationKey::make([
                 'key' => 'key-a',
                 'translations' => [
@@ -38,7 +38,7 @@ class TranslationFileTest extends TestCase
     public function it_gets_a_specific_translations_key()
     {
         $translationFile = TranslationFile::make();
-        $translationFile->setRelation('translationKeys', Collection::make([
+        $translationFile->setRelation('keys', Collection::make([
             TranslationKey::make([
                 'key' => 'key-a',
                 'translations' => [

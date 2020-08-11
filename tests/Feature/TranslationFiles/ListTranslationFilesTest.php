@@ -27,7 +27,7 @@ class ListTranslationFilesTest extends TestCase
         $this->assertCount(2, $translationFiles);
         $this->assertTrue($translationFiles->first()->is($first));
         $this->assertTrue($translationFiles->last()->is($second));
-        $this->assertTrue($translationFiles->first()->relationLoaded('translationKeys'));
-        $this->assertTrue($translationFiles->last()->relationLoaded('translationKeys'));
+        $this->assertTrue($translationFiles->first()->relationLoaded('keys'));
+        $this->assertTrue($translationFiles->last()->relationLoaded('keys'));
     }
 }

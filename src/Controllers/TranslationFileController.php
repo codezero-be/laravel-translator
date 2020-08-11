@@ -17,7 +17,7 @@ class TranslationFileController extends Controller
      */
     public function index()
     {
-        $files = TranslationFile::with('translationKeys')->get();
+        $files = TranslationFile::with('keys')->get();
 
         return response()->json($files);
     }
